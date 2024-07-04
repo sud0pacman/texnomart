@@ -32,7 +32,16 @@ class _ManagerScreenState extends State<ManagerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: myBottomNavigation(),
-      body: screens[0],
+      body: Navigator(
+        onGenerateRoute: (settings) {
+          Widget page = screens[0];
+          if (settings.name == 'product_by_category') {
+            List<String> args = settings.arguments as List<String>;
+            page = ProductsByCategoryScreen(slug: args[0], categoryName: args[1],);
+          }
+          return MaterialPageRoute(builder: (_) => page);
+        },
+      ),
     );
   }
 

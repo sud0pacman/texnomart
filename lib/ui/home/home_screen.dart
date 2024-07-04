@@ -339,12 +339,15 @@ class _HomeScreenState extends State<HomeScreen> {
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProductsByCategoryScreen(
-                slug: category?.slug ?? "telefony", categoryName: category?.title ?? "Telefonlar"
-              ))
-            );
+            List<String> myArgs = [category?.slug ?? "telefony", category?.title ?? "Telefonlar"];
+            Navigator.pushNamed(context, "product_by_category", arguments: myArgs);
+
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => ProductsByCategoryScreen(
+            //     slug: category?.slug ?? "telefony", categoryName: category?.title ?? "Telefonlar"
+            //   ))
+            // );
           },
           child: Container(
             width: 80,
