@@ -2,9 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:texnomart/data/source/remote/response/top_categories/top_categories.dart';
 
+import '../response/all_category/catalog_menu.dart';
 import '../response/brends/brands_response.dart';
 import '../response/category/products_all_category.dart';
-import '../response/detail/detail_response.dart';
+import '../response/detail/detail_responce.dart';
+import '../response/product/product.dart';
 import '../response/sliders/slider_response.dart';
 import '../response/special_categories/special_categories.dart';
 import '../response/xit_products/xit_products.dart';
@@ -42,4 +44,8 @@ abstract class ApiService {
   Future<DetailResponse> getDetailProduct({
     @Query('id') required String id,
   });
+
+
+  @GET('web/v1/header/popup-menu-catalog')
+  Future<CatalogMenu> getMenuCatalogs();
 }

@@ -10,3 +10,9 @@ class LoadProductByCategoryEvent extends ProductByCategoryEvent {
 }
 class Back extends ProductByCategoryEvent {}
 class ClickProductEvent extends ProductByCategoryEvent {}
+class CLickLikedEvent extends ProductByCategoryEvent {
+  final int id;
+  final bool isLike;
+
+  CLickLikedEvent({required this.id, required this.isLike, });
+}

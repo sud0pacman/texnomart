@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:texnomart/data/source/local/my_bookmark_helper.dart';
 import 'package:texnomart/presentation/theme/my_images.dart';
 import 'package:texnomart/presentation/theme/ui_components.dart';
 
@@ -14,6 +15,8 @@ import '../../presentation/bloc/product_by_category/product_by_category_bloc.dar
 import '../../presentation/theme/light_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
+import '../detail/product_detail_screen.dart';
 
 class ProductsByCategoryScreen extends StatefulWidget {
   final String slug;
@@ -46,6 +49,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: LightColors.primary, // Status bar color
+        statusBarIconBrightness: Brightness.dark
     ));
     return SafeArea(
       child: Scaffold(
@@ -57,7 +61,9 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
             listener: (context, state) {},
             builder: (context, state) {
               print("********************************** ${state.filteredProduct}");
-              return xitProductList(state.filteredProduct);
+              return state.loading == true
+                ? loading()
+                : xitProductList(state.filteredProduct, state.likes);
             },
           ),
         ),
@@ -65,8 +71,19 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
     );
   }
 
+  Widget loading() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      alignment: Alignment.center,
+      child: const CircularProgressIndicator(
+        color: LightColors.primary,
+      ),
+    );
+  }
 
-  Widget xitProductList(ProductAllCategory? filteredProduct) {
+
+  Widget xitProductList(ProductAllCategory? filteredProduct, List<int> likes) {
     return Column(
       children: [
         const SizedBox(height: 15,),
@@ -88,10 +105,14 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
               shrinkWrap: true,
               physics: const ScrollPhysics(),
               crossAxisCount: 2,
-              // mainAxisSpacing: 4,
+              mainAxisSpacing: 20,
               // crossAxisSpacing: 4,
               itemBuilder: (context, index) {
-                return xitProductItem(filteredProduct?.data?.products?[index]);
+                var product = filteredProduct?.data?.products?[index];
+                return xitProductItem(
+                  product,
+                  likes.contains(product?.id ?? -1),
+                );
               },
             ),
           ),
@@ -102,117 +123,141 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
 
 
   // Products? xitProduct
-  Widget xitProductItem(Products? xitProduct) {
-    return SizedBox(
-      // width: 150,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            alignment: Alignment.topLeft,
-            children: [
-              Positioned(
-                  child: Container(
-                    alignment: Alignment.topLeft,
-                    margin: const EdgeInsets.only(top: 10),
-                    child: Image(
-                      width: 135,
-                      height: 140,
-                      image: CachedNetworkImageProvider(xitProduct?.image ?? MyImages.myPlaceHolder),
-                    ),
-                  )
-              ),
-
-
-              Positioned(
-                  bottom: 0,
-                  child: SvgPicture.asset(
-                      MyImages.green
-                  )
-              ),
-
-              Positioned(
-                  top: 0,
-                  right: 0,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      circleButton(MyImages.heart),
-                      const SizedBox(height: 10,),
-                      circleButton(MyImages.compare),
-                    ],
-                  )
-              )
-            ],
-          ),
-
-          const SizedBox(height: 20,),
-
-          Text(
-            xitProduct?.name ?? "Name",
-            textAlign: TextAlign.start,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 14,
-              fontWeight: FontWeight.normal,
+  Widget xitProductItem(Products? xitProduct, bool isLike) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ProductDetailScreen(
+              id: xitProduct?.id ?? -1,
+              name: xitProduct?.name ?? "Null",
+              image: xitProduct?.image ?? MyImages.myPlaceHolder,
+              salePrice: xitProduct?.salePrice ?? 1,
+              reviewsCount: xitProduct?.reviewsCount,
             ),
           ),
+        );
+      },
+      child: SizedBox(
+        // width: 150,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              alignment: Alignment.topLeft,
+              children: [
+                Positioned(
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      margin: const EdgeInsets.only(top: 10),
+                      child: Image(
+                        width: 135,
+                        height: 140,
+                        image: CachedNetworkImageProvider(xitProduct?.image ?? MyImages.myPlaceHolder),
+                      ),
+                    )
+                ),
 
-          const SizedBox(height: 10,),
 
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              myStar(),
-              const SizedBox(width: 6,),
-              myStar(),
-              const SizedBox(width: 6,),
-              myStar(),
-              const SizedBox(width: 6,),
-              myStar(),
-              const SizedBox(width: 6,),
-              myStar(),
-              const SizedBox(width: 12,),
-              const NormalText(text: "0", fontSize: 14,)
-            ],
-          ),
+                Positioned(
+                    bottom: 0,
+                    child: SvgPicture.asset(
+                        MyImages.green
+                    )
+                ),
 
-          const SizedBox(height: 12,),
-          discountItem(
-              "${((xitProduct?.salePrice ?? 0) ~/ 24).toString().formatNumber()} so'mdan / 24 oy",
-              const Color(0xfff7f7f7)
-          ),
-          const SizedBox(height: 8,),
-          discountItem(
-              "${((xitProduct?.salePrice ?? 0) ~/ 12).toString().formatNumber()} so'm / 0•0•12",
-              LightColors.lightPeach
-          ),
-          const SizedBox(height: 20,),
-          BoldText(
-            text: " ${(xitProduct?.salePrice ?? 0).toString().formatNumber()} so'm",
-            fontSize: 16,
-          ),
-        ],
+                Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        circleButton(
+                          isLike ? MyImages.heart_filled : MyImages.heart,
+                            () {
+                              _bloc.add(CLickLikedEvent(id: xitProduct?.id ?? -1, isLike: isLike));
+                            }
+                        ),
+                        const SizedBox(height: 10,),
+                        circleButton(MyImages.compare, () {}),
+                      ],
+                    )
+                )
+              ],
+            ),
+
+            const SizedBox(height: 20,),
+
+            Text(
+              xitProduct?.name ?? "Name",
+              textAlign: TextAlign.start,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+
+            const SizedBox(height: 10,),
+
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                myStar(),
+                const SizedBox(width: 6,),
+                myStar(),
+                const SizedBox(width: 6,),
+                myStar(),
+                const SizedBox(width: 6,),
+                myStar(),
+                const SizedBox(width: 6,),
+                myStar(),
+                const SizedBox(width: 12,),
+                const NormalText(text: "0", fontSize: 14,)
+              ],
+            ),
+
+            const SizedBox(height: 12,),
+            discountItem(
+                "${((xitProduct?.salePrice ?? 0) ~/ 24).toString().formatNumber()} so'mdan / 24 oy",
+                const Color(0xfff7f7f7)
+            ),
+            const SizedBox(height: 8,),
+            discountItem(
+                "${((xitProduct?.salePrice ?? 0) ~/ 12).toString().formatNumber()} so'm / 0•0•12",
+                LightColors.lightPeach
+            ),
+            const SizedBox(height: 20,),
+            BoldText(
+              text: " ${(xitProduct?.salePrice ?? 0).toString().formatNumber()} so'm",
+              fontSize: 16,
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget circleButton(String image) {
-    return Container(
-      height: 30,
-      width: 30,
-      padding: EdgeInsets.all(5),
-      decoration: BoxDecoration(
-          border: Border.all(color: LightColors.white, width: 1),
-          shape: BoxShape.circle,
-          color: Colors.white.withAlpha(79)
-      ),
-      child: Image.asset(
-        image,
-        height: 24,
-        width: 24,
-        color: Colors.black,
+  Widget circleButton(String image, VoidCallback onTap) {
+    return InkWell(
+      splashColor: Colors.transparent,
+      onTap: onTap,
+      child: Container(
+        height: 30,
+        width: 30,
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+            border: Border.all(color: LightColors.white, width: 1),
+            shape: BoxShape.circle,
+            color: Colors.white.withAlpha(79)
+        ),
+        child: Image.asset(
+          image,
+          height: 24,
+          width: 24,
+          color: Colors.black,
+        ),
       ),
     );
   }

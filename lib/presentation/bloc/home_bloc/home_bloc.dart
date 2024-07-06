@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:texnomart/data/source/local/my_basket_helper.dart';
 import 'package:texnomart/data/source/remote/service/api_service.dart';
 import 'package:texnomart/di/di.dart';
 
@@ -14,7 +15,7 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc()
-      : super(HomeState(sliders: null, topCategories: null, topBrands: null,specialCategories: null, xitProducts: null)) {
+      : super(HomeState(sliders: null, topCategories: null, topBrands: null,specialCategories: null, xitProducts: null, basket: [])) {
     on<HomeLoadCategoriesEvent>((event, emit) async {
       var slider = await di<ApiService>().getSlider();
 
@@ -37,6 +38,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       var xitProducts = await di<ApiService>().getXitProducts();
 
       emit(state.copyWith(xitProducts: xitProducts));
+    });
+
+    on<HomeClickLikedEvent>((event, emit) async{
+      if(!event.isSave) {
+        await MyBasketHelper.saveId(event.id, event.id);
+      }
+      else {
+        await MyBasketHelper.remove(event.id);
+      }
+
+      emit(state.copyWith(basket: MyBasketHelper.getIds()));
     });
   }
 }

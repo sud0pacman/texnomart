@@ -13,11 +13,13 @@ import 'package:texnomart/presentation/theme/ui_components.dart';
 import 'package:texnomart/presentation/theme/my_images.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:texnomart/ui/products_by_category/products_by_category_screen.dart';
+import 'package:texnomart/ui/all_category/catalog_screen.dart';
+import 'package:texnomart/ui/detail/product_detail_screen.dart';
 
 import '../../data/source/remote/response/brends/brands_response.dart';
 import '../../data/source/remote/response/xit_products/xit_products.dart';
-import '../../presentation/theme/my_images.dart';
+import '../../presentation/bloc/basket/basket_bloc.dart';
+import '../products_by_category/products_by_category_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -35,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _bloc.add(HomeLoadCategoriesEvent());
-    _bloc.add(HomeLoadBrandEvent());
+    // _bloc.add(HomeLoadBrandEvent());
     _bloc.add(HomeLoadSpecialCategories());
     _bloc.add(HomeLoadXitProductsEvent());
   }
@@ -51,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: LightColors.primary, // Status bar color
+        statusBarIconBrightness: Brightness.dark
     ));
     return SafeArea(
       child: Scaffold(
@@ -58,200 +61,250 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: myAppBar(),
           body: BlocProvider.value(
             value: _bloc,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: BlocConsumer<HomeBloc, HomeState>(
-                listener: (context, state) {},
-                builder: (context, state) {
-                  return Column(
-                    children: [
-                      mySearch(),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      SizedBox(
-                        width: double
-                            .infinity, // Ensures the slider takes up the full width
-                        child: CarouselSlider.builder(
-                          carouselController: _controller,
-                          itemCount: state.sliders?.data?.data?.length ?? 0,
-                          itemBuilder: (BuildContext context, int itemIndex,
-                                  int pageViewIndex) =>
-                              sliderItem(state.sliders?.data?.data?[itemIndex]),
-                          options: CarouselOptions(
-                            height: 200,
-                            aspectRatio: 16 / 9,
-                            viewportFraction: 1.0, // Each item fills the width
-                            initialPage: 0,
-                            enableInfiniteScroll: true,
-                            reverse: false,
-                            autoPlay: true,
-                            autoPlayInterval: const Duration(seconds: 3),
-                            autoPlayAnimationDuration:
-                                const Duration(milliseconds: 800),
-                            autoPlayCurve: Curves.fastOutSlowIn,
-                            enlargeCenterPage: true,
-                            enlargeFactor: 0.3,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                activeIndex = index;
-                              });
-                            },
-                            scrollDirection: Axis.horizontal,
+            child: RefreshIndicator(
+              onRefresh: () async{
+                _bloc.add(HomeLoadXitProductsEvent());
+              },
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: BlocConsumer<HomeBloc, HomeState>(
+                  listener: (context, state) {},
+                  builder: (context, state) {
+                    return Column(
+                      children: [
+                        mySearch(),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: double
+                              .infinity, // Ensures the slider takes up the full width
+                          child: CarouselSlider.builder(
+                            carouselController: _controller,
+                            itemCount: state.sliders?.data?.data?.length ?? 0,
+                            itemBuilder: (BuildContext context, int itemIndex,
+                                    int pageViewIndex) =>
+                                sliderItem(state.sliders?.data?.data?[itemIndex]),
+                            options: CarouselOptions(
+                              height: 200,
+                              aspectRatio: 16 / 9,
+                              viewportFraction: 1.0, // Each item fills the width
+                              initialPage: 0,
+                              enableInfiniteScroll: true,
+                              reverse: false,
+                              autoPlay: true,
+                              autoPlayInterval: const Duration(seconds: 3),
+                              autoPlayAnimationDuration:
+                                  const Duration(milliseconds: 800),
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              enlargeCenterPage: true,
+                              enlargeFactor: 0.3,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  activeIndex = index;
+                                });
+                              },
+                              scrollDirection: Axis.horizontal,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      buildIndicator(
-                          state.sliders?.data?.data?.length ?? activeIndex),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      // brandList(state.topBrands),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      categoryTitle(title: "Ommabop kategoriyalar"),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      specialCategoryList(state.specialCategories),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      categoryTitle(title: "Xit savdo"),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        buildIndicator(
+                            state.sliders?.data?.data?.length ?? activeIndex),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        // brandList(state.topBrands),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        categoryTitle(title: "Ommabop kategoriyalar", () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const CatalogScreen()));
+                        }),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        specialCategoryList(state.specialCategories),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        categoryTitle(title: "Xit savdo", () {}),
 
-                      const SizedBox(
-                        height: 20,
-                      ),
+                        const SizedBox(
+                          height: 20,
+                        ),
 
-                      xitProductList(state.xitProducts),
+                        xitProductList(state.xitProducts, state.basket),
 
-                      const SizedBox(
-                        height: 10,
-                      ),
-                    ],
-                  );
-                },
+                        const SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
       )),
     );
   }
 
-  Widget xitProductList(XitProducts? xitProducts) {
-    return Container(
-      height: 350,
-      margin: const EdgeInsets.symmetric(horizontal: 15),
+  Widget xitProductList(XitProducts? xitProducts, List<int> basket) {
+    return SizedBox(
+      height: 370,
       child: ListView.separated(
+        shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         itemCount: xitProducts?.data?.data?.length ?? 0,
         itemBuilder: (context, index) {
-          return xitProductItem(xitProducts?.data?.data?[index]);
+          return xitProductItem(xitProducts?.data?.data?[index], basket.contains(xitProducts?.data?.data?[index].id));
         },
-        separatorBuilder: (context, index) => const SizedBox(width: 15, height: 1,),
+        separatorBuilder: (context, index) => index+1 != xitProducts?.data?.data?.length ?  const SizedBox(width: 0,) : const SizedBox(width: 20,),
       ),
     );
   }
 
-  Widget xitProductItem(GetXitProducts? xitProduct) {
-    return SizedBox(
-      width: 150,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            alignment: Alignment.topLeft,
-            children: [
-              Positioned(
-                  child: Container(
-                    alignment: Alignment.topLeft,
-                    margin: const EdgeInsets.only(top: 10),
-                    child: Image(
-                      width: 135,
-                      height: 140,
-                      image: CachedNetworkImageProvider(xitProduct?.image ?? MyImages.myPlaceHolder),
-                    ),
-                  )
-              ),
-
-              Positioned(
-                top: 0,
-                child: xitSellTitle(xitProduct?.stickers?[0].backgroundColor?.toColor() ?? Colors.red)
-              ),
-
-              Positioned(
-                  bottom: 0,
-                  child: SvgPicture.asset(
-                    MyImages.green
-                  )
-              ),
-
-              Positioned(
-                  top: 0,
-                  right: 0,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      circleButton(MyImages.heart),
-                      const SizedBox(height: 10,),
-                      circleButton(MyImages.compare),
-                    ],
-                  )
-              )
-            ],
-          ),
-
-          const SizedBox(height: 20,),
-
-          Text(
-            xitProduct?.name ?? "Name",
-            textAlign: TextAlign.start,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 14,
-              fontWeight: FontWeight.normal,
+  Widget xitProductItem(GetXitProducts? xitProduct, bool isSave) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ProductDetailScreen(
+              id: xitProduct?.id ?? -1,
+              name: xitProduct?.name ?? "Null",
+              image: xitProduct?.image ?? MyImages.myPlaceHolder,
+              salePrice: xitProduct?.salePrice ?? 1,
+              reviewsCount: xitProduct?.reviewsCount,
             ),
           ),
+        );
+      },
+      child: Container(
+        width: 150,
+        margin: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              alignment: Alignment.topLeft,
+              children: [
+                Positioned(
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      margin: const EdgeInsets.only(top: 10),
+                      child: Image(
+                        width: 135,
+                        height: 140,
+                        image: CachedNetworkImageProvider(xitProduct?.image ?? MyImages.myPlaceHolder),
+                      ),
+                    )
+                ),
 
-          const SizedBox(height: 10,),
+                Positioned(
+                  top: 0,
+                  child: xitSellTitle(xitProduct?.stickers?[0].backgroundColor?.toColor() ?? Colors.red)
+                ),
 
-           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              myStar(),
-              const SizedBox(width: 6,),
-              myStar(),
-              const SizedBox(width: 6,),
-              myStar(),
-              const SizedBox(width: 6,),
-              myStar(),
-              const SizedBox(width: 6,),
-              myStar(),
-              const SizedBox(width: 12,),
-              const NormalText(text: "0", fontSize: 14,)
-            ],
-          ),
+                Positioned(
+                    bottom: 0,
+                    child: SvgPicture.asset(
+                      MyImages.green
+                    )
+                ),
 
-          const SizedBox(height: 12,),
-          discountItem(
-              "${((xitProduct?.salePrice ?? 0) ~/ 24).toString().formatNumber()} so'mdan / 24 oy",
-              const Color(0xfff7f7f7)
-          ),
-          const SizedBox(height: 8,),
-          discountItem(
-              "${((xitProduct?.salePrice ?? 0) ~/ 12).toString().formatNumber()} so'm / 0•0•12",
-              LightColors.lightPeach
-          ),
-          const SizedBox(height: 20,),
-          BoldText(
-            text: " ${(xitProduct?.salePrice ?? 0).toString().formatNumber()} so'm",
-            fontSize: 16,
-          ),
-        ],
+                Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                      InkWell(
+                      onTap: () {
+                        setState(() {
+                          _bloc.add(HomeClickLikedEvent(id: xitProduct?.id ?? 1, isSave: isSave));
+                        });
+                      },
+                      child: Container(
+                        height: 30,
+                        width: 30,
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: LightColors.white, width: 1),
+                            shape: BoxShape.circle,
+                            color: Colors.white.withAlpha(79)
+                        ),
+                        child: Image.asset(
+                          isSave ? MyImages.heart_filled : MyImages.heart,
+                          height: 24,
+                          width: 24,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                        // circleButton(MyImages.heart, () {
+                        //   setState(() {
+                        //     _bloc.add(HomeClickLikedEvent(id: xitProduct?.id ?? 1, isSave: isSave));
+                        //   });
+                        // }),
+                        const SizedBox(height: 10,),
+                        circleButton(MyImages.compare, () {}),
+                      ],
+                    )
+                )
+              ],
+            ),
+
+            const SizedBox(height: 20,),
+
+            Text(
+              xitProduct?.name ?? "Name",
+              textAlign: TextAlign.start,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+
+            const SizedBox(height: 10,),
+
+             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                myStar(),
+                const SizedBox(width: 6,),
+                myStar(),
+                const SizedBox(width: 6,),
+                myStar(),
+                const SizedBox(width: 6,),
+                myStar(),
+                const SizedBox(width: 6,),
+                myStar(),
+                const SizedBox(width: 12,),
+                const NormalText(text: "0", fontSize: 14,)
+              ],
+            ),
+
+            const SizedBox(height: 12,),
+            discountItem(
+                "${((xitProduct?.salePrice ?? 0) ~/ 24).toString().formatNumber()} so'mdan / 24 oy",
+                const Color(0xfff7f7f7)
+            ),
+            const SizedBox(height: 8,),
+            discountItem(
+                "${((xitProduct?.salePrice ?? 0) ~/ 12).toString().formatNumber()} so'm / 0•0•12",
+                LightColors.lightPeach
+            ),
+            const SizedBox(height: 20,),
+            BoldText(
+              text: " ${(xitProduct?.salePrice ?? 0).toString().formatNumber()} so'm",
+              fontSize: 16,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -282,21 +335,24 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget circleButton(String image) {
-    return Container(
-      height: 30,
-      width: 30,
-      padding: EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        border: Border.all(color: LightColors.white, width: 1),
-        shape: BoxShape.circle,
-        color: Colors.white.withAlpha(79)
-      ),
-      child: Image.asset(
-        image,
-        height: 24,
-        width: 24,
-        color: Colors.black,
+  Widget circleButton(String image, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 30,
+        width: 30,
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          border: Border.all(color: LightColors.white, width: 1),
+          shape: BoxShape.circle,
+          color: Colors.white.withAlpha(79)
+        ),
+        child: Image.asset(
+          image,
+          height: 24,
+          width: 24,
+          color: Colors.black,
+        ),
       ),
     );
   }
@@ -340,7 +396,14 @@ class _HomeScreenState extends State<HomeScreen> {
           highlightColor: Colors.transparent,
           onTap: () {
             List<String> myArgs = [category?.slug ?? "telefony", category?.title ?? "Telefonlar"];
-            Navigator.pushNamed(context, "product_by_category", arguments: myArgs);
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ProductsByCategoryScreen(
+                  slug: myArgs[0],
+                  categoryName: myArgs[1],
+                ),
+              ),
+            );
 
             // Navigator.push(
             //   context,
@@ -377,6 +440,8 @@ class _HomeScreenState extends State<HomeScreen> {
         Text(
           category?.title ?? "",
           textAlign: TextAlign.start,
+          softWrap: true,
+          overflow: TextOverflow.clip,
           style: const TextStyle(
             color: Colors.black,
             fontSize: 12,
@@ -426,30 +491,35 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-  Widget categoryTitle({String title = ""}) {
-    return  Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          BoldText(
-            text: title,
-            fontSize: 18,
-          ),
+  Widget categoryTitle(VoidCallback onTap, {String title = "",}) {
+    return  InkWell(
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 15),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            BoldText(
+              text: title,
+              fontSize: 18,
+            ),
 
-          Spacer(),
+            Spacer(),
 
-          NormalText(
-            text: "hammasi",
-            fontSize: 14,
-          ),
+            NormalText(
+              text: "hammasi",
+              fontSize: 14,
+            ),
 
-          Icon(
-            Icons.arrow_forward_ios,
-            size: 14,
-            color: Colors.grey,
-          )
-        ],
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 14,
+              color: Colors.grey,
+            )
+          ],
+        ),
       ),
     );
   }

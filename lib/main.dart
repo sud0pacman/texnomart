@@ -1,16 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
+import 'package:texnomart/data/source/local/my_basket_helper.dart';
 import 'package:texnomart/data/source/remote/service/api_service.dart';
 import 'package:texnomart/di/di.dart';
+import 'package:texnomart/ui/basket/cart.dart';
 import 'package:texnomart/ui/home/home_screen.dart';
 import 'package:texnomart/ui/manager/manager_screen.dart';
 
+import 'data/source/local/my_bookmark_helper.dart';
+
+
 void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
   print("********************************** home ishga tushdi");
   setup();
-  runApp(const MyApp());
-  // var sliders = await di<ApiService>().getDetailProduct(id: "pylesosy");
-  //
-  // print("****************************** menga keldi ${sliders.data?.data}");
+  await MyBasketHelper.init();
+  await MyBookmarkHelper.init();
+
+  // print("****************************** ids ${MyBookmarkHelper.getIds()[0].count}");
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

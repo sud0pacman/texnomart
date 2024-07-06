@@ -13,16 +13,16 @@ final dio = Dio(BaseOptions(
 ));
 
 void setup(){
-  dio.interceptors.add(
-    TalkerDioLogger(
-      settings: const TalkerDioLoggerSettings(
-        printRequestHeaders: true,
-        printRequestData: true,
-        printResponseData: true,
-        printResponseHeaders: true,
-        printResponseMessage: true,
-      ),
-    ),
-  );
+  // dio.interceptors.add(
+  //   TalkerDioLogger(
+  //     settings: const TalkerDioLoggerSettings(
+  //       printRequestHeaders: true,
+  //       printRequestData: true,
+  //       printResponseData: true,
+  //       printResponseHeaders: true,
+  //       printResponseMessage: true,
+  //     ),
+  //   ),
+  // );
   di.registerSingleton<ApiService>(ApiService(dio));
 }
