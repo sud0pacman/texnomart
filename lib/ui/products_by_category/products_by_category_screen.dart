@@ -95,6 +95,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
               physics: const ScrollPhysics(),
               crossAxisCount: 2,
               mainAxisSpacing: 20,
+              itemCount: filteredProduct?.data?.products?.length,
               // crossAxisSpacing: 4,
               itemBuilder: (context, index) {
                 var product = filteredProduct?.data?.products?[index];
@@ -223,6 +224,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
               text: " ${(xitProduct?.salePrice ?? 0).toString().formatNumber()} so'm",
               fontSize: 16,
             ),
+            const SizedBox(height: 20,),
           ],
         ),
       ),
