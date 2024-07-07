@@ -13,6 +13,9 @@ class ClickProductEvent extends ProductByCategoryEvent {}
 class CLickLikedEvent extends ProductByCategoryEvent {
   final int id;
   final bool isLike;
+  final String name;
+  final int cost;
+  final String img;
 
-  CLickLikedEvent({required this.id, required this.isLike, });
+  CLickLikedEvent({required this.id, required this.isLike, required this.name, required this.cost, required this.img});
 }

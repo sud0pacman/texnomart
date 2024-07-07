@@ -1,10 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:texnomart/data/model/bookmark_data.dart';
-import 'package:texnomart/data/source/local/my_basket_helper.dart';
 import 'package:texnomart/data/source/local/my_bookmark_helper.dart';
 import 'package:texnomart/data/source/remote/service/api_service.dart';
 
-import '../../../data/source/remote/response/detail/detail_responce.dart';
 import '../../../di/di.dart';
 
 part 'basket_event.dart';
@@ -57,12 +55,10 @@ class BasketBloc extends Bloc<BasketEvent, BasketState> {
 
     on<ClickLiked>((event, emit) async{
       print("************************** basket bloc ${event.isLiked}");
-      if(event.isLiked) {
-        await MyBasketHelper.remove(event.id,);
-      }
-      else {
-        await MyBasketHelper.saveId(event.id, event.id);
-      }
+      var bookMark = MyBookmarkHelper.getDataByKey(event.id);
+      bookMark?.isFavourite = !event.isLiked;
+
+      MyBookmarkHelper.putData(event.id, bookMark!);
 
       emit(state.copyWith(isUpdate: true));
     });

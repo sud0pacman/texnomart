@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:texnomart/data/model/bookmark_data.dart';
+import 'package:texnomart/data/source/local/my_bookmark_helper.dart';
 import 'package:texnomart/data/source/remote/response/sliders/slider_response.dart';
 import 'package:texnomart/data/source/remote/response/special_categories/special_categories.dart';
 import 'package:texnomart/presentation/bloc/home_bloc/home_bloc.dart';
@@ -151,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget xitProductList(XitProducts? xitProducts, List<int> basket) {
+  Widget xitProductList(XitProducts? xitProducts, List<BookmarkData> basket) {
     return SizedBox(
       height: 370,
       child: ListView.separated(
@@ -159,7 +161,8 @@ class _HomeScreenState extends State<HomeScreen> {
         scrollDirection: Axis.horizontal,
         itemCount: xitProducts?.data?.data?.length ?? 0,
         itemBuilder: (context, index) {
-          return xitProductItem(xitProducts?.data?.data?[index], basket.contains(xitProducts?.data?.data?[index].id));
+          var bookMarkData = MyBookmarkHelper.getDataByKey(xitProducts?.data?.data?[index].id ?? -1);
+          return xitProductItem(xitProducts?.data?.data?[index], bookMarkData?.isFavourite ?? false);
         },
         separatorBuilder: (context, index) => index+1 != xitProducts?.data?.data?.length ?  const SizedBox(width: 0,) : const SizedBox(width: 20,),
       ),
@@ -224,8 +227,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       InkWell(
                       onTap: () {
                         setState(() {
-                          _bloc.add(HomeClickLikedEvent(id: xitProduct?.id ?? 1, isSave: isSave));
-                        });
+                          _bloc.add(HomeClickLikedEvent(
+                              id: xitProduct?.id ?? 1,
+                              isSave: isSave,
+                              name: xitProduct?.name ?? "",
+                              img: xitProduct?.image ?? MyImages.myPlaceHolder,
+                              cost: xitProduct?.salePrice ?? 1));
+                            });
                       },
                       child: Container(
                         height: 30,

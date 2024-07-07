@@ -5,17 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:texnomart/data/model/bookmark_data.dart';
-import 'package:texnomart/data/source/local/my_basket_helper.dart';
-import 'package:texnomart/data/source/remote/response/detail/detail_responce.dart';
 import 'package:texnomart/presentation/bloc/basket/basket_bloc.dart';
 import 'package:texnomart/presentation/theme/my_images.dart';
 import 'package:texnomart/presentation/theme/ui_components.dart';
-import 'package:flutter/material.dart';
 
-import '../../data/source/local/my_bookmark_helper.dart';
 import '../../presentation/theme/light_colors.dart';
 import 'cart.dart';
 
@@ -107,7 +102,7 @@ class _BasketScreenState extends State<BasketScreen> {
                                   itemBuilder: (context, index) {
                                     var id = state.basket[index].id;
                                     var count =  state.basket[index].count;
-                                    var isLiked = (MyBasketHelper.getDataById(id) ?? -1) == -1 ? false : true;
+                                    var isLiked = state.basket[index].isFavourite;
                                     return productItem(state.basket[index], count, isLiked, id);
                                   }
                                 ),

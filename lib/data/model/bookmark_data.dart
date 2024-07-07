@@ -19,10 +19,18 @@ class BookmarkData extends HiveObject {
   @HiveField(4)
   String name;
 
+  @HiveField(5)
+  bool isFavourite;
+
+  @HiveField(6)
+  bool isSave;
+
   BookmarkData(
       {required this.id,
       required this.count,
       required this.name,
       required this.cost,
-      required this.img});
+      required this.img,
+      required this.isSave,
+      required this.isFavourite});
 }

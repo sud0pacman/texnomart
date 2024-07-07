@@ -8,13 +8,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:texnomart/data/model/bookmark_data.dart';
 import 'package:texnomart/presentation/bloc/favourite/favourite_bloc.dart';
 import 'package:texnomart/presentation/theme/ui_components.dart';
 import 'package:texnomart/ui/basket/basket_screen.dart';
 
-import '../../data/source/local/my_basket_helper.dart';
-import '../../data/source/local/my_bookmark_helper.dart';
-import '../../data/source/remote/response/detail/detail_responce.dart';
 import '../../presentation/theme/light_colors.dart';
 import '../../presentation/theme/my_images.dart';
 import '../basket/cart.dart';
@@ -69,9 +67,9 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                 onRefresh: () async{
                   _bloc.add(LoadDataEvent());
                 },
-                child: state.products.isEmpty && state.isLoading
+                child: state.bookmarks.isEmpty && state.isLoading
                 ? loading()
-                : state.isLoading == false && state.products.isEmpty
+                : state.isLoading == false && state.bookmarks.isEmpty
                 ? emptyField()
                 : Column(
                   children: [
@@ -80,16 +78,16 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                           scrollDirection: Axis.vertical,
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
-                              var id = state.products[index].data?.data?.id  ?? 1;
-                              var isSaved = MyBookmarkHelper.getDataByKey(id) != null ? true : false;
-                              var isLiked = (MyBasketHelper.getDataById(id) ?? -1) == -1 ? false : true;
-                              print("*********************************** favourite screen products ${state.products.length}");
-                              return productItem(state.products[index], isLiked, isSaved, id, cart);
+                              var id = state.bookmarks[index].id;
+                              var isLiked = state.bookmarks[index].isFavourite;
+                              var isSaved = state.bookmarks[index].isSave;
+                              print("*********************************** favourite screen products ${state.bookmarks.length}");
+                              return productItem(state.bookmarks[index], isLiked, isSaved, id, cart);
                             },
                             separatorBuilder: (context, index) {
                               return separator();
                             },
-                            itemCount: state.products.length
+                            itemCount: state.bookmarks.length
                         )
                     ),
                   ],
@@ -104,7 +102,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
 
 
 
-  Widget productItem(DetailResponse detail, bool isLiked, bool isSaved, int id, CartProvider cart) {
+  Widget productItem(BookmarkData detail, bool isLiked, bool isSaved, int id, CartProvider cart) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
@@ -112,7 +110,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
         children: [
           Expanded(
               flex: 2,
-              child: image(detail.data!.data!.smallImages![0])
+              child: image(detail.img)
           ),
 
           Expanded(
@@ -125,7 +123,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                 const SizedBox(height: 3,),
 
                 Text(
-                  detail.data?.data?.name ?? "Salom",
+                  detail.name,
                   textAlign: TextAlign.start,
                   softWrap: true,
                   overflow: TextOverflow.visible,
@@ -141,13 +139,13 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
 
                 BoldText(
                     fontSize: 14,
-                    text: "${detail.data?.data?.salePrice.toString().formatNumber() ?? "Salom"} so'm"
+                    text: "${detail.cost.toString().formatNumber()} so'm"
                 ),
 
                 const SizedBox(height: 15,),
 
                 discountItem(
-                    "${((detail.data?.data!.salePrice ?? 1000)  ~/ 2).toString().formatNumber()} so'mdan / 24 oy",
+                    "${(detail.cost  ~/ 2).toString().formatNumber()} so'mdan / 24 oy",
                     Colors.grey.withAlpha(30)
                 ),
 
@@ -168,7 +166,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                     splashColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     onTap: () {
-                      _bloc.add(ClickLikeEvent(isLiked: isLiked, id: id));
+                      _bloc.add(ClickLikeEvent(isLiked: isLiked, id: id, name: detail.name, img: detail.img, cost: detail.cost));
                     },
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 25),
@@ -178,7 +176,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                         shape: BoxShape.circle
                       ),
                       child: Icon(
-                        isLiked ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+                         isLiked ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
                         color: Colors.black,
                         size: 20,
                       ),
@@ -188,14 +186,17 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                   const Spacer(),
 
                   InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
                     onTap: () {
                       if(!isSaved) {
                         _bloc.add(ClickBasketEvent(
                           id: id,
                           isSaved: isSaved,
-                          img: detail.data!.data!.smallImages![0],
-                          cost: detail.data!.data!.salePrice ?? 1,
-                          name: detail.data!.data!.name ?? ""
+                          img: detail.img,
+                          cost: detail.cost,
+                          name: detail.name,
+                          isLiked: isLiked
                         ));
                         cart.addItem();
                       } else {

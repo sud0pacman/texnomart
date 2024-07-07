@@ -1,10 +1,9 @@
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
-import 'package:texnomart/data/source/local/my_basket_helper.dart';
+import 'package:texnomart/data/model/bookmark_data.dart';
+import 'package:texnomart/data/source/local/my_bookmark_helper.dart';
 import 'package:texnomart/data/source/remote/service/api_service.dart';
 import 'package:texnomart/di/di.dart';
 
-import '../../../data/source/remote/response/brends/brands_response.dart';
 import '../../../data/source/remote/response/category/products_all_category.dart';
 
 part 'product_by_category_event.dart';
@@ -19,18 +18,22 @@ class ProductByCategoryBloc extends Bloc<ProductByCategoryEvent, ProductByCatego
       
       print("********************************* category bloc $products");
 
-      emit(state.copyWith(loading: false, filteredProduct: products, likes: MyBasketHelper.getIds()));
+      emit(state.copyWith(loading: false, filteredProduct: products, likes: MyBookmarkHelper.getIds()));
     });
 
     on<CLickLikedEvent>((event, emit) async{
-      if(event.isLike) {
-        await MyBasketHelper.remove(event.id);
+      var bookMark = MyBookmarkHelper.getDataByKey(event.id);
+
+      if(bookMark != null) {
+        bookMark.isFavourite = !event.isLike;
       }
       else {
-        await MyBasketHelper.saveId(event.id, event.id);
+        bookMark = BookmarkData(id: event.id, count: 1, name: event.name, cost: event.cost, img: event.img, isSave: false, isFavourite: !event.isLike);
       }
 
-      emit(state.copyWith(likes: MyBasketHelper.getIds()));
+      MyBookmarkHelper.putData(event.id, bookMark);
+
+      emit(state.copyWith(likes: MyBookmarkHelper.getIds()));
     });
   }
 }

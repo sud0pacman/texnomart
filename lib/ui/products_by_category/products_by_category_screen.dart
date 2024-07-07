@@ -5,15 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:texnomart/data/model/bookmark_data.dart';
 import 'package:texnomart/data/source/local/my_bookmark_helper.dart';
 import 'package:texnomart/presentation/theme/my_images.dart';
 import 'package:texnomart/presentation/theme/ui_components.dart';
 
 import '../../data/source/remote/response/category/products_all_category.dart';
-import '../../data/source/remote/response/top_categories/top_categories.dart';
 import '../../presentation/bloc/product_by_category/product_by_category_bloc.dart';
 import '../../presentation/theme/light_colors.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../detail/product_detail_screen.dart';
@@ -71,19 +70,9 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
     );
   }
 
-  Widget loading() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      alignment: Alignment.center,
-      child: const CircularProgressIndicator(
-        color: LightColors.primary,
-      ),
-    );
-  }
 
 
-  Widget xitProductList(ProductAllCategory? filteredProduct, List<int> likes) {
+  Widget xitProductList(ProductAllCategory? filteredProduct, List<BookmarkData> basket) {
     return Column(
       children: [
         const SizedBox(height: 15,),
@@ -109,9 +98,10 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
               // crossAxisSpacing: 4,
               itemBuilder: (context, index) {
                 var product = filteredProduct?.data?.products?[index];
+                var isLike = MyBookmarkHelper.getDataByKey(filteredProduct?.data?.products?[index].id ?? -1) == null ? false : true;
                 return xitProductItem(
                   product,
-                  likes.contains(product?.id ?? -1),
+                  isLike,
                 );
               },
             ),
@@ -123,7 +113,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
 
 
   // Products? xitProduct
-  Widget xitProductItem(Products? xitProduct, bool isLike) {
+  Widget xitProductItem(Products? xitProduct, bool isLiked) {
     return InkWell(
       onTap: () {
         Navigator.of(context).push(
@@ -174,9 +164,9 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         circleButton(
-                          isLike ? MyImages.heart_filled : MyImages.heart,
+                          isLiked ? MyImages.heart_filled : MyImages.heart,
                             () {
-                              _bloc.add(CLickLikedEvent(id: xitProduct?.id ?? -1, isLike: isLike));
+                              _bloc.add(CLickLikedEvent(id: xitProduct?.id ?? -1, isLike: isLiked, name: xitProduct?.name ?? "", cost: xitProduct?.salePrice ?? 1, img: xitProduct?.image ?? MyImages.myPlaceHolder));
                             }
                         ),
                         const SizedBox(height: 10,),
@@ -355,6 +345,19 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
       ),
     );
   }
+
+  Widget loading() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      alignment: Alignment.center,
+      child: const CircularProgressIndicator(
+        color: LightColors.primary,
+      ),
+    );
+  }
+
+
 
   AppBar myAppBar() {
     return AppBar(

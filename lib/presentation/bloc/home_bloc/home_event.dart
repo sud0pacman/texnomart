@@ -11,6 +11,9 @@ class HomeLoadXitProductsEvent extends HomeEvent {}
 class HomeClickLikedEvent extends HomeEvent {
   final int id;
   final bool isSave;
+  final String name;
+  final int cost;
+  final String img;
 
-  HomeClickLikedEvent({required this.id, required this.isSave,});
+  HomeClickLikedEvent({required this.id, required this.isSave, required this.name, required this.cost, required this.img});
 }

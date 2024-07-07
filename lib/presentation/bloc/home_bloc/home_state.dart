@@ -6,7 +6,7 @@ class HomeState {
   final TopBrands? topBrands;
   final SpecialCategories? specialCategories;
   final XitProducts? xitProducts;
-  final List<int> basket;
+  final List<BookmarkData> basket;
 
   HomeState(
       {required this.sliders,
@@ -22,7 +22,7 @@ class HomeState {
           TopBrands? topBrands,
           SpecialCategories? specialCategories,
           XitProducts? xitProducts,
-          List<int>? basket}) =>
+          List<BookmarkData>? basket}) =>
       HomeState(
           sliders: sliders ?? this.sliders,
           topCategories: topCategories ?? this.topCategories,

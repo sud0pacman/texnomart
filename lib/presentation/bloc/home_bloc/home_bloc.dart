@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:texnomart/data/source/local/my_basket_helper.dart';
+import 'package:texnomart/data/model/bookmark_data.dart';
+import 'package:texnomart/data/source/local/my_bookmark_helper.dart';
 import 'package:texnomart/data/source/remote/service/api_service.dart';
 import 'package:texnomart/di/di.dart';
 
@@ -41,14 +42,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
 
     on<HomeClickLikedEvent>((event, emit) async{
-      if(!event.isSave) {
-        await MyBasketHelper.saveId(event.id, event.id);
+      var bookMark = MyBookmarkHelper.getDataByKey(event.id);
+
+      if(bookMark != null) {
+        bookMark.isFavourite = !event.isSave;
       }
       else {
-        await MyBasketHelper.remove(event.id);
+        bookMark = BookmarkData(id: event.id, count: 1, name: event.name, cost: event.cost, img: event.img, isSave: false, isFavourite: !event.isSave);
       }
 
-      emit(state.copyWith(basket: MyBasketHelper.getIds()));
+      MyBookmarkHelper.putData(event.id, bookMark);
+
+
+      emit(state.copyWith(basket: MyBookmarkHelper.getIds()));
     });
   }
 }

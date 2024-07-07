@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
@@ -36,12 +37,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarColor: LightColors.primary, // Status bar color
+        statusBarIconBrightness: Brightness.dark
+    ));
     final cart = Provider.of<CartProvider>(context);
     return BlocProvider.value(
       value:  bloc,
       child: BlocConsumer<DetailBloc, DetailState>(
   listener: (context, state) {
-
+    if(state.isSaved) {
+      setState(() {});
+    }
   },
   builder: (context, state) {
     print("************************************* detail $state");
