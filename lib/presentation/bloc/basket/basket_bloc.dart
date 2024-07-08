@@ -16,8 +16,9 @@ class BasketBloc extends Bloc<BasketEvent, BasketState> {
       List<BookmarkData> bookmarks = MyBookmarkHelper.getIds();
 
       print("********************************** basket bloc $bookmarks");
+      var onlySaves = MyBookmarkHelper.getIds().where((e) => e.isSave == true).toList();
 
-      emit(state.copyWith(basket: MyBookmarkHelper.getIds(),));
+      emit(state.copyWith(basket: onlySaves,));
     });
 
     on<BasketDeleteProductEven>((event, emit) async{
@@ -32,9 +33,11 @@ class BasketBloc extends Bloc<BasketEvent, BasketState> {
       print("************************** basket bloc deleting ${event.product.id}");
 
 
+      var onlySaves = MyBookmarkHelper.getIds().where((e) => e.isSave == true).toList();
+
       emit(state.copyWith(
         remove: event.product,
-        basket: MyBookmarkHelper.getIds(),
+        basket: onlySaves,
         ));
     });
 
