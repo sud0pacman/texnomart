@@ -22,8 +22,15 @@ class BasketBloc extends Bloc<BasketEvent, BasketState> {
 
     on<BasketDeleteProductEven>((event, emit) async{
 
+      var bookmark = MyBookmarkHelper.getDataByKey(event.product.id);
+
+      if(bookmark != null) {
+        bookmark.isSave = false;
+        await MyBookmarkHelper.putData(event.product.id, bookmark);
+      }
+
       print("************************** basket bloc deleting ${event.product.id}");
-      await MyBookmarkHelper.remove(event.product.id);
+
 
       emit(state.copyWith(
         remove: event.product,
