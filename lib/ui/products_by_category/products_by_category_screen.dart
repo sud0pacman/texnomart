@@ -6,9 +6,12 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:texnomart/data/model/bookmark_data.dart';
+import 'package:texnomart/data/model/my_product_data.dart';
 import 'package:texnomart/data/source/local/my_bookmark_helper.dart';
+import 'package:texnomart/presentation/bloc/favourite/favourite_bloc.dart';
 import 'package:texnomart/presentation/theme/my_images.dart';
 import 'package:texnomart/presentation/theme/ui_components.dart';
+import 'package:texnomart/ui/basket/basket_screen.dart';
 
 import '../../data/source/remote/response/category/products_all_category.dart';
 import '../../data/source/remote/response/cheaps/cheeps_response.dart';
@@ -30,6 +33,7 @@ class ProductsByCategoryScreen extends StatefulWidget {
 
 class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
   final ProductByCategoryBloc _bloc = ProductByCategoryBloc();
+  int selectedCheep = -1;
 
   @override
   void initState() {
@@ -63,7 +67,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
               print("********************************** product by category screen ${state.filteredProduct}");
               return state.loading == true
                 ? loading()
-                : xitProductList(state.filteredProduct, state.likes, state.cheeps);
+                : xitProductList(state.filteredProduct, state.bookMarks, state.cheeps);
             },
           ),
         ),
@@ -73,16 +77,16 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
 
 
 
-  Widget xitProductList(ProductAllCategory? filteredProduct, List<BookmarkData> basket, List<Category> cheeps) {
+  Widget xitProductList(List<MyProductData> filteredProduct, List<BookmarkData> basket, List<Category> cheeps) {
     return Column(
       children: [
         const SizedBox(height: 15,),
         SizedBox(
-          height: 32,
+          height: 36,
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: cheeps.length,
-              itemBuilder: (context, index) => brandChip(cheeps[index])
+              itemBuilder: (context, index) => brandChip(cheeps[index], index)
           ),
         ),
         const SizedBox(height: 12,),
@@ -96,15 +100,13 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
               physics: const ScrollPhysics(),
               crossAxisCount: 2,
               mainAxisSpacing: 20,
-              itemCount: filteredProduct?.data?.products?.length,
+              itemCount: filteredProduct.length,
               // crossAxisSpacing: 4,
               itemBuilder: (context, index) {
-                var product = filteredProduct?.data?.products?[index];
-                var isLike = MyBookmarkHelper.getDataByKey(filteredProduct?.data?.products?[index].id ?? -1) == null ? false : true;
+                var product = filteredProduct[index];
                 return xitProductItem(
                   product,
-                  isLike,
-                  false
+                  index,
                 );
               },
             ),
@@ -116,17 +118,17 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
 
 
   // Products? xitProduct
-  Widget xitProductItem(Products? xitProduct, bool isLiked, bool isSaved) {
+  Widget xitProductItem(MyProductData xitProduct, int index) {
     return InkWell(
       onTap: () async{
         var res = await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ProductDetailScreen(
-              id: xitProduct?.id ?? -1,
-              name: xitProduct?.name ?? "Null",
-              image: xitProduct?.image ?? MyImages.myPlaceHolder,
-              salePrice: xitProduct?.salePrice ?? 1,
-              reviewsCount: xitProduct?.reviewsCount,
+              id: xitProduct.id,
+              name: xitProduct.name,
+              image: xitProduct.img,
+              salePrice: xitProduct.cost,
+              reviewsCount: xitProduct.reviewCount,
             ),
           ),
         );
@@ -153,7 +155,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
                       child: Image(
                         width: 135,
                         height: 140,
-                        image: CachedNetworkImageProvider(xitProduct?.image ?? MyImages.myPlaceHolder),
+                        image: CachedNetworkImageProvider(xitProduct.img),
                       ),
                     )
                 ),
@@ -165,25 +167,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
                         MyImages.green
                     )
                 ),
-                
-                
-                Positioned(
-                  child:  Container(
-                    height: 36,
-                    width: 56,
-                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                    margin: const EdgeInsets.symmetric(horizontal: 25),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xffffbd00), width: 2),
-                        borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: Image.asset(
-                      isSaved ? MyImages.checked_basket : MyImages.basket_png,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
+
 
                 Positioned(
                     top: 0,
@@ -192,10 +176,16 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         circleButton(
-                          isLiked ? MyImages.heart_filled : MyImages.heart,
+                          xitProduct.isLike ? MyImages.heart_filled : MyImages.heart,
                             () {
-                              _bloc.add(CLickLikedEvent(id: xitProduct?.id ?? -1, isLike: isLiked, name: xitProduct?.name ?? "", cost: xitProduct?.salePrice ?? 1, img: xitProduct?.image ?? MyImages.myPlaceHolder));
-                            }
+                              _bloc.add(CLickLikedEvent(
+                              id: xitProduct.id,
+                              isLike: xitProduct.isLike,
+                              name: xitProduct.name,
+                              cost: xitProduct.cost,
+                              img: xitProduct.img,
+                              index: index));
+                        }
                         ),
                         const SizedBox(height: 10,),
                         circleButton(MyImages.compare, () {}),
@@ -208,7 +198,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
             const SizedBox(height: 20,),
 
             Text(
-              xitProduct?.name ?? "Name",
+              xitProduct.name,
               textAlign: TextAlign.start,
               style: const TextStyle(
                 color: Colors.black,
@@ -238,18 +228,66 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
 
             const SizedBox(height: 12,),
             discountItem(
-                "${((xitProduct?.salePrice ?? 0) ~/ 24).toString().formatNumber()} so'mdan / 24 oy",
+                "${((xitProduct.cost) ~/ 24).toString().formatNumber()} so'mdan / 24 oy",
                 const Color(0xfff7f7f7)
             ),
             const SizedBox(height: 8,),
             discountItem(
-                "${((xitProduct?.salePrice ?? 0) ~/ 12).toString().formatNumber()} so'm / 0•0•12",
+                "${((xitProduct.cost) ~/ 12).toString().formatNumber()} so'm / 0•0•12",
                 LightColors.lightPeach
             ),
             const SizedBox(height: 20,),
-            BoldText(
-              text: " ${(xitProduct?.salePrice ?? 0).toString().formatNumber()} so'm",
-              fontSize: 16,
+            Row(
+              children: [
+                Expanded(
+                  child: BoldText(
+                    text: " ${(xitProduct.cost).toString().formatNumber()} so'm",
+                    color: Colors.black,
+                    fontSize: 14,
+                    height: 1,
+                  ),
+                ),
+                InkWell(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onTap: () async{
+                    if (xitProduct.isSave) {
+                      var res = await Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => const BasketScreen()));
+                      if (res != null) {
+                        setState(() {});
+                      }
+                    } else {
+                      _bloc.add(
+                        CategoryClickBasketEvent(
+                          id: xitProduct.id,
+                          img: xitProduct.img,
+                          cost: xitProduct.cost,
+                          isSave: xitProduct.isSave,
+                          name: xitProduct.name,
+                          index: index
+                        )
+                      );
+                    }
+                  },
+                  child: Container(
+                    height: 36,
+                    width: 42,
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                    margin: const EdgeInsets.only(right: 20),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color(0xffffbd00), width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Image.asset(
+                      xitProduct.isSave ? MyImages.checked_basket : MyImages.basket_png,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 20,),
           ],
@@ -356,26 +394,41 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
     );
   }
 
-  Widget brandChip(Category category) {
+  Widget brandChip(Category category, int index) {
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => ProductsByCategoryScreen(
-                slug: category.slug,
-                categoryName: category.name,
-              ),
-            ));
+        if(selectedCheep == index) {
+          selectedCheep = -1;
+          _bloc.add(LoadProductByCategoryEvent(slug: widget.slug));
+        }
+        else {
+          setState(() {
+            selectedCheep = index;
+            _bloc.add(LoadProductByCategoryEvent(slug: category.slug));
+          });
+        }
       },
       child: Container(
         alignment: Alignment.center,
         margin: const EdgeInsets.symmetric(horizontal: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12,),
         decoration: BoxDecoration(
-          color: LightColors.primary2,
+          color: index == selectedCheep ? LightColors.primary.withAlpha(20) : Colors.grey.withOpacity(.2),
           borderRadius: BorderRadius.circular(18),
         ),
-        child: NormalText(
+        child: index == selectedCheep
+        ? Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Align(alignment: Alignment.center, child: Icon(CupertinoIcons.checkmark_alt, size: 18, color: Colors.black,)),
+            const SizedBox(width: 8,),
+            NormalText(
+              text: category.name,
+            )
+          ],
+        )
+        :NormalText(
           text: category.name,
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:texnomart/data/source/remote/response/inner_category_cheeps/inner_category_cheeps.dart';
 import 'package:texnomart/data/source/remote/response/top_categories/top_categories.dart';
 
 import '../response/all_category/catalog_menu.dart';
@@ -7,9 +8,6 @@ import '../response/brends/brands_response.dart';
 import '../response/category/products_all_category.dart';
 import '../response/cheaps/cheeps_response.dart';
 import '../response/detail/detail_responce.dart';
-import '../response/inner_category_cheeps/inner_category_cheeps.dart';
-import '../response/inner_category_prdoducts/inner_category_prdoducts.dart';
-import '../response/product/product.dart';
 import '../response/sliders/slider_response.dart';
 import '../response/special_categories/special_categories.dart';
 import '../response/xit_products/xit_products.dart';
@@ -57,15 +55,15 @@ abstract class ApiService {
     @Query('slug') required String slug,
   });
 
-  @GET('common/v1/search/filters')
-  Future<InnerCategoryProducts> getInnerCategoryProducts({
-    @Query('category_all') required String slug,
-    @Query('sort') String sort = '-popular',
-    @Query('page') int page = 1,
-  });
+  // @GET('common/v1/search/filters')
+  // Future<InnerCategoryProducts> getInnerCategoryProducts({
+  //   @Query('category_all') required String slug,
+  //   @Query('sort') String sort = '-popular',
+  //   @Query('page') int page = 1,
+  // });
 
-  @GET('web/v1/category/chips')
-  Future<InnerCategoryCheeps> getInnerCheeps({
-    @Query('slug') required String slug,
-  });
+  // @GET('web/v1/category/chips')
+  // Future<InnerCategoryCheeps> getInnerCheeps({
+  //   @Query('slug') required String slug,
+  // });
 }

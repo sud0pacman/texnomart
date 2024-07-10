@@ -28,6 +28,4 @@ class AddToBookMarkEvent extends DetailEvent {
   final String name;
 
   AddToBookMarkEvent({required this.key, required this.img, required this.cost, required this.name});
-
-
 }

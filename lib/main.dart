@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:texnomart/di/di.dart';
+import 'package:texnomart/presentation/theme/light_colors.dart';
 import 'package:texnomart/ui/basket/cart.dart';
 import 'package:texnomart/ui/favourite/favourite_screen.dart';
 import 'package:texnomart/ui/manager/manager_screen.dart';
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: LightColors.primary),
         useMaterial3: true,
       ),
       home: const ManagerScreen(),

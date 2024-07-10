@@ -6,25 +6,27 @@ class BoldText extends StatelessWidget {
   final String text;
   final double fontSize;
   final Color color;
+  final double height;
 
   const BoldText(
       {super.key,
       required this.text,
       this.fontSize = 16,
-      this.color = Colors.black});
+      this.color = Colors.black,
+      this.height = .1});
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
       textAlign: TextAlign.start,
-      softWrap: true,
+      // softWrap: true,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
         color: color,
         fontSize: fontSize,
         fontWeight: FontWeight.bold,
-        height: .1,
+        height: height,
       ),
     );
   }
