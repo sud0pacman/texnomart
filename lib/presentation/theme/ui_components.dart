@@ -36,25 +36,29 @@ class NormalText extends StatelessWidget {
   final String text;
   final double fontSize;
   final Color color;
+  final double height;
+  final TextAlign align;
 
   const NormalText(
       {super.key,
       required this.text,
       this.fontSize = 14,
-      this.color = Colors.black});
+      this.color = Colors.black,
+      this.height = 0.1,
+      this.align = TextAlign.start});
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
-      textAlign: TextAlign.start,
+      textAlign: align,
       softWrap: true,
       overflow: TextOverflow.clip,
       style: TextStyle(
         color: color,
         fontSize: fontSize,
         fontWeight: FontWeight.normal,
-        height: .1,
+        height: height,
       ),
     );
   }

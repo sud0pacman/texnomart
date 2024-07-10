@@ -6,6 +6,7 @@ import 'package:texnomart/data/source/local/my_bookmark_helper.dart';
 import 'package:texnomart/presentation/theme/light_colors.dart';
 import 'package:texnomart/ui/basket/basket_screen.dart';
 import 'package:texnomart/ui/home/home_screen.dart';
+import 'package:texnomart/ui/profile/profile_screen.dart';
 
 import '../../presentation/theme/ui_components.dart';
 import '../all_category/catalog_screen.dart';
@@ -35,7 +36,7 @@ class _ManagerScreenState extends State<ManagerScreen> {
     const CatalogScreen(),
     const BasketScreen(),
     const Placeholder(),
-    const FavouriteScreen()
+    const ProfilePage()
   ];
 
   @override

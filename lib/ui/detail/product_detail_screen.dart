@@ -8,6 +8,7 @@ import 'package:texnomart/data/model/my_feature_data.dart';
 import 'package:texnomart/data/source/remote/response/detail/detail_responce.dart';
 import 'package:texnomart/data/source/remote/response/product/product.dart';
 import 'package:texnomart/presentation/theme/ui_components.dart';
+import 'package:texnomart/ui/basket/basket_screen.dart';
 import 'package:texnomart/ui/features/features_screen.dart';
 
 import '../../presentation/bloc/detail/detail_bloc.dart';
@@ -155,10 +156,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               height: 16,
             ),
             InkWell(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
               onTap: () {
                 if(!isAdded) {
                   bloc.add(AddToBookMarkEvent(key: widget.id, img: widget.image, name: widget.name, cost: widget.salePrice));
                   cart.addItem();
+                }
+                else {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const BasketScreen()));
                 }
               },
               child: Container(
