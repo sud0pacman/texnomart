@@ -74,7 +74,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                 : Column(
                   children: [
                     Expanded(
-                        child: ListView.separated(
+                        child: ListView.builder(
                           scrollDirection: Axis.vertical,
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
@@ -83,9 +83,6 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                               var isSaved = state.bookmarks[index].isSave;
                               print("*********************************** favourite screen products ${state.bookmarks.length}");
                               return productItem(state.bookmarks[index], isLiked, isSaved, id, cart);
-                            },
-                            separatorBuilder: (context, index) {
-                              return separator();
                             },
                             itemCount: state.bookmarks.length
                         )
@@ -105,126 +102,138 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
   Widget productItem(BookmarkData detail, bool isLiked, bool isSaved, int id, CartProvider cart) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
         children: [
-          Expanded(
-              flex: 2,
-              child: image(detail.img)
-          ),
-
-          Expanded(
-            flex: 3,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-
-                const SizedBox(height: 3,),
-
-                Text(
-                  detail.name,
-                  textAlign: TextAlign.start,
-                  softWrap: true,
-                  overflow: TextOverflow.visible,
-                  style: TextStyle(
-                      color: Colors.black.withAlpha(200),
-                      fontSize: 14,
-                      fontWeight: FontWeight.normal,
-                      height: 1.3
-                  ),
-                ),
-
-                const SizedBox(height: 25,),
-
-                BoldText(
-                    fontSize: 14,
-                    text: "${detail.cost.toString().formatNumber()} so'm"
-                ),
-
-                const SizedBox(height: 15,),
-
-                discountItem(
-                    "${(detail.cost  ~/ 2).toString().formatNumber()} so'mdan / 24 oy",
-                    Colors.grey.withAlpha(30)
-                ),
-
-                const SizedBox(height: 25,),
-              ],
-            ),
-          ),
-
-          Expanded(
-            flex: 2,
-            child: SizedBox(
-              height: 155,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  InkWell(
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    onTap: () {
-                      _bloc.add(ClickLikeEvent(isLiked: isLiked, id: id, name: detail.name, img: detail.img, cost: detail.cost));
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 25),
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.withAlpha(300), width: 1.5),
-                        shape: BoxShape.circle
-                      ),
-                      child: Icon(
-                         isLiked ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
-                        color: Colors.black,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-
-                  const Spacer(),
-
-                  InkWell(
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    onTap: () {
-                      if(!isSaved) {
-                        _bloc.add(ClickBasketEvent(
-                          id: id,
-                          isSaved: isSaved,
-                          img: detail.img,
-                          cost: detail.cost,
-                          name: detail.name,
-                          isLiked: isLiked
-                        ));
-                        cart.addItem();
-                      } else {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const BasketScreen())
-                        );
-                      }
-                    },
-                    child: Container(
-                      height: 36,
-                      width: 56,
-                      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                      margin: const EdgeInsets.symmetric(horizontal: 25),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xffffbd00), width: 2),
-                        borderRadius: BorderRadius.circular(10)
-                      ),
-                      child: Image.asset(
-                        isSaved ? MyImages.checked_basket : MyImages.basket_png,
-                        color: Colors.black,
-                      ),
-                    ),
-                  )
-                ],
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                  flex: 2,
+                  child: image(detail.img)
               ),
-            ),
-          )
+
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+
+                    const SizedBox(height: 3,),
+
+                    Text(
+                      detail.name,
+                      textAlign: TextAlign.start,
+                      softWrap: true,
+                      overflow: TextOverflow.visible,
+                      style: TextStyle(
+                          color: Colors.black.withAlpha(200),
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                          height: 1.3
+                      ),
+                    ),
+
+                    const SizedBox(height: 15,),
+
+                    discountItem(
+                        "${(detail.cost  ~/ 2).toString().formatNumber()} so'mdan / 24 oy",
+                        Colors.grey.withAlpha(30)
+                    ),
+
+                    const SizedBox(height: 8,),
+                    discountItem(
+                        "${((detail.cost) ~/ 12).toString().formatNumber()} so'm / 0•0•12",
+                        LightColors.lightPeach
+                    ),
+
+                    const SizedBox(height: 20,),
+
+                    BoldText(
+                        fontSize: 16,
+                        text: "${detail.cost.toString().formatNumber()} so'm"
+                    ),
+                  ],
+                ),
+              ),
+
+              Expanded(
+                flex: 2,
+                child: SizedBox(
+                  height: 155,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        onTap: () {
+                          _bloc.add(ClickLikeEvent(isLiked: isLiked, id: id, name: detail.name, img: detail.img, cost: detail.cost));
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 25),
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.withAlpha(300), width: 1.5),
+                            shape: BoxShape.circle
+                          ),
+                          child: Icon(
+                             isLiked ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+                            color: Colors.black,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+
+                      const Spacer(),
+
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        onTap: () {
+                          if(!isSaved) {
+                            _bloc.add(ClickBasketEvent(
+                              id: id,
+                              isSaved: isSaved,
+                              img: detail.img,
+                              cost: detail.cost,
+                              name: detail.name,
+                              isLiked: isLiked
+                            ));
+                            cart.addItem();
+                          } else {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const BasketScreen())
+                            );
+                          }
+                        },
+                        child: Container(
+                          height: 36,
+                          width: 56,
+                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                          margin: const EdgeInsets.symmetric(horizontal: 25),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: const Color(0xffffbd00), width: 2),
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Image.asset(
+                            isSaved ? MyImages.checked_basket : MyImages.basket_png,
+                            color: Colors.black,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+
+          const SizedBox(height: 20,),
+          line(),
+          const SizedBox(height: 20,),
         ],
       ),
     );
@@ -249,14 +258,15 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
   }
 
   Widget image(String url) {
-    return Image(
-      image: CachedNetworkImageProvider(url),
-      height: 80,
-      width: MediaQuery.of(context).size.width / 4,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Image(
+        image: CachedNetworkImageProvider(url),
+        height: 90,
+        width: MediaQuery.of(context).size.width / 4,
+      ),
     );
   }
-
-
 
   Widget loading() {
     return Container(
@@ -264,17 +274,6 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
       width: MediaQuery.of(context).size.width,
       alignment: Alignment.center,
       child: const CircularProgressIndicator(color: LightColors.primary,),
-    );
-  }
-
-  Widget separator() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const SizedBox(height: 12,),
-        line(),
-        const SizedBox(height: 2,),
-      ],
     );
   }
 
@@ -290,7 +289,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
             height: 66,
           ),
           const SizedBox(height: 25,),
-          BoldText(
+          const BoldText(
             text: "Savatda hali hech narsa yo'q",
             fontSize: 18,
           ),
@@ -308,7 +307,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
         borderRadius: BorderRadius.circular(10),
         color: LightColors.primary,
       ),
-      child: BoldText(
+      child: const BoldText(
         text: "Xarid qilishga o'ting",
         fontSize: 14,
       ),
@@ -319,9 +318,9 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
     return Container(
       height: 1.5,
       width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.symmetric(horizontal: 15,),
+      margin: const EdgeInsets.symmetric(horizontal: 15,),
       decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: Colors.grey.withOpacity(.3),
           borderRadius: BorderRadius.circular(1)
       ),
     );

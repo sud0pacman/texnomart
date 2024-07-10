@@ -245,6 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                       InkWell(
+                      splashColor: Colors.transparent,
                       onTap: () {
                         setState(() {
                           _bloc.add(HomeClickLikedEvent(
