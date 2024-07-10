@@ -19,7 +19,7 @@ class BoldText extends StatelessWidget {
       text,
       textAlign: TextAlign.start,
       softWrap: true,
-      overflow: TextOverflow.clip,
+      overflow: TextOverflow.ellipsis,
       style: TextStyle(
         color: color,
         fontSize: fontSize,
@@ -136,9 +136,35 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
 AppBar myAppBar(String title) {
   return AppBar(
     backgroundColor: LightColors.primary,
+    scrolledUnderElevation: 0.0,
     title: Align(
       alignment: Alignment.centerLeft,
       child: NormalText(text: title, fontSize: 18,),
+    ),
+  );
+}
+
+
+Widget myButton(String text, {Color background = LightColors.primary, Color textColor = Colors.black, double textSize = 14, double height = 42}) {
+  return InkWell(
+    splashColor: Colors.transparent,
+    highlightColor: Colors.transparent,
+    child: Container(
+      height: height,
+      constraints: const BoxConstraints(
+        minHeight: 32,
+        minWidth: double.infinity,
+      ),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(8)
+      ),
+      child: BoldText(
+        text: text,
+        fontSize: textSize,
+        color: textColor,
+      ),
     ),
   );
 }

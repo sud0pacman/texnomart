@@ -4,7 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:texnomart/data/model/my_feature_data.dart';
+import 'package:texnomart/data/source/remote/response/detail/detail_responce.dart';
+import 'package:texnomart/data/source/remote/response/product/product.dart';
 import 'package:texnomart/presentation/theme/ui_components.dart';
+import 'package:texnomart/ui/features/features_screen.dart';
 
 import '../../presentation/bloc/detail/detail_bloc.dart';
 import '../../presentation/theme/light_colors.dart';
@@ -28,6 +32,8 @@ class ProductDetailScreen extends StatefulWidget {
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   late DetailBloc bloc;
 
+  List<String> features = [];
+
   @override
   void initState() {
     bloc = DetailBloc();
@@ -45,11 +51,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return BlocProvider.value(
       value:  bloc,
       child: BlocConsumer<DetailBloc, DetailState>(
-  listener: (context, state) {
-    if(state.isSaved) {
-      setState(() {});
-    }
-  },
+      listener: (context, state) {
+        if(state.isSaved) {
+          setState(() {});
+        }
+
+
+        print("********************************** detail screen ${state.detailResponse?.data.data.characters}");
+      },
   builder: (context, state) {
     print("************************************* detail $state");
     return Scaffold(
@@ -85,9 +94,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 child: _buildBasketContainer(state.isSaved,
                     widget.salePrice.toString().formatNumber(), cart)
               ),
-              _buildInfoRow("Do'konlarda mavjudligi"),
+
+              _buildInfoRow("Do'konlarda mavjudligi",),
               _buildCustomThicknessDivider(),
-              _buildInfoRow("Xususiyatlari"),
+              _buildInfoCharacters("Xususiyatlari", state.detailResponse?.data.data.characters),
               _buildAboutProductRow('Brend', 'Aksion'),
               _buildAboutProductRow('Unumdorligi', '0.5 kg/daq'),
               _buildAboutProductRow('Quvvati', '220 Vt'),
@@ -110,49 +120,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  Widget _buildAddBasket(bool isAdded) {
-    return Card(
-      elevation: 10,
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: InkWell(
-          child: InkWell(
-            onTap: () {
-              // add to database
-            },
-            child: Container(
-              height: 50,
-              width: MediaQuery.of(context).size.width,
-              decoration: ShapeDecoration(
-                color: !isAdded ? LightColors.primary : LightColors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: 10,
-                ),
-                child: Center(
-                  child: Text(
-                    isAdded ? "Savatchada" : "Savatchaga qo'shish",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      height: 0,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _buildAvailability() {
     return Row(
@@ -231,9 +198,37 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  Widget _buildInfoRow(String title) {
+
+  Widget _buildInfoCharacters(String title, List<DataCharacter>? characters, ) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => FeaturesScreen(characters: characters,)));
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16.0),
+        child: Row(
+          children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            ),
+            const Spacer(),
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: LightColors.grey,
+              size: 18,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String title,) {
+    return InkWell(
+      onTap: () {
+
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16.0),
         child: Row(
@@ -425,7 +420,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       backgroundColor: LightColors.primary,
       leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, true);
           },
           icon: const Icon(Icons.arrow_back_rounded)),
       actions: [

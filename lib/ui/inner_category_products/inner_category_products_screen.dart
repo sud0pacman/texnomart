@@ -2,40 +2,38 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:texnomart/data/model/bookmark_data.dart';
-import 'package:texnomart/data/source/local/my_bookmark_helper.dart';
-import 'package:texnomart/presentation/theme/my_images.dart';
-import 'package:texnomart/presentation/theme/ui_components.dart';
+import 'package:texnomart/data/source/remote/response/inner_category_cheeps/inner_category_cheeps.dart';
+import 'package:texnomart/data/source/remote/response/inner_category_prdoducts/inner_category_prdoducts.dart';
+import 'package:texnomart/presentation/bloc/inner_category_product/inner_category_products_bloc.dart';
 
-import '../../data/source/remote/response/category/products_all_category.dart';
-import '../../data/source/remote/response/cheaps/cheeps_response.dart';
-import '../../presentation/bloc/product_by_category/product_by_category_bloc.dart';
+import '../../data/source/local/my_bookmark_helper.dart';
 import '../../presentation/theme/light_colors.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-
+import '../../presentation/theme/my_images.dart';
+import '../../presentation/theme/ui_components.dart';
 import '../detail/product_detail_screen.dart';
 
-class ProductsByCategoryScreen extends StatefulWidget {
+class InnerCategoryProductsScreen extends StatefulWidget {
   final String slug;
   final String categoryName;
-
-  const ProductsByCategoryScreen({super.key, required this.slug, required this.categoryName});
+  const InnerCategoryProductsScreen({super.key, required this.slug, required this.categoryName});
 
   @override
-  State<ProductsByCategoryScreen> createState() => _ProductsByCategoryScreenState();
+  State<InnerCategoryProductsScreen> createState() => _InnerCategoryProductsScreenState();
 }
 
-class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
-  final ProductByCategoryBloc _bloc = ProductByCategoryBloc();
+class _InnerCategoryProductsScreenState extends State<InnerCategoryProductsScreen> {
+
+  final InnerCategoryProductsBloc _bloc = InnerCategoryProductsBloc();
 
   @override
   void initState() {
     super.initState();
 
-    _bloc.add(LoadProductByCategoryEvent(slug: widget.slug));
+    _bloc.add(LoadDataEvent(slug: widget.slug));
   }
 
   @override
@@ -48,7 +46,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: LightColors.primary, // Status bar color
+        statusBarColor: LightColors.primary, // Status bar color
         statusBarIconBrightness: Brightness.dark
     ));
     return SafeArea(
@@ -57,23 +55,22 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
         appBar: myAppBar(),
         body: BlocProvider.value(
           value: _bloc,
-          child: BlocConsumer<ProductByCategoryBloc, ProductByCategoryState>(
+          child: BlocConsumer<InnerCategoryProductsBloc, InnerCategoryProductsState>(
             listener: (context, state) {},
             builder: (context, state) {
-              print("********************************** product by category screen ${state.filteredProduct}");
-              return state.loading == true
-                ? loading()
-                : xitProductList(state.filteredProduct, state.likes, state.cheeps);
+              print("********************************** product by category screen ${state.products}");
+              return state.isLoading == true
+                  ? loading()
+                  : xitProductList(state.products, state.likes, state.categories);
             },
           ),
         ),
       ),
-    );
+    );;
   }
 
 
-
-  Widget xitProductList(ProductAllCategory? filteredProduct, List<BookmarkData> basket, List<Category> cheeps) {
+  Widget xitProductList(List<Product> products, List<BookmarkData> basket, List<Parent> cheeps) {
     return Column(
       children: [
         const SizedBox(height: 15,),
@@ -85,7 +82,6 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
               itemBuilder: (context, index) => brandChip(cheeps[index])
           ),
         ),
-        const SizedBox(height: 12,),
         filterSection(),
         const SizedBox(height: 12,),
         Flexible(
@@ -96,15 +92,14 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
               physics: const ScrollPhysics(),
               crossAxisCount: 2,
               mainAxisSpacing: 20,
-              itemCount: filteredProduct?.data?.products?.length,
+              itemCount: products.length,
               // crossAxisSpacing: 4,
               itemBuilder: (context, index) {
-                var product = filteredProduct?.data?.products?[index];
-                var isLike = MyBookmarkHelper.getDataByKey(filteredProduct?.data?.products?[index].id ?? -1) == null ? false : true;
+                var product = products[index];
+                var isLike = MyBookmarkHelper.getDataByKey(product.id ?? -1) == null ? false : true;
                 return xitProductItem(
                   product,
                   isLike,
-                  false
                 );
               },
             ),
@@ -116,17 +111,17 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
 
 
   // Products? xitProduct
-  Widget xitProductItem(Products? xitProduct, bool isLiked, bool isSaved) {
+  Widget xitProductItem(Product product, bool isLiked) {
     return InkWell(
       onTap: () async{
         var res = await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ProductDetailScreen(
-              id: xitProduct?.id ?? -1,
-              name: xitProduct?.name ?? "Null",
-              image: xitProduct?.image ?? MyImages.myPlaceHolder,
-              salePrice: xitProduct?.salePrice ?? 1,
-              reviewsCount: xitProduct?.reviewsCount,
+              id: product.id ?? -1,
+              name: product.name ?? "Null",
+              image: product.image ?? MyImages.myPlaceHolder,
+              salePrice: product.salePrice ?? 1,
+              reviewsCount: product.reviewsCount,
             ),
           ),
         );
@@ -153,7 +148,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
                       child: Image(
                         width: 135,
                         height: 140,
-                        image: CachedNetworkImageProvider(xitProduct?.image ?? MyImages.myPlaceHolder),
+                        image: CachedNetworkImageProvider(product.image ?? MyImages.myPlaceHolder),
                       ),
                     )
                 ),
@@ -165,25 +160,6 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
                         MyImages.green
                     )
                 ),
-                
-                
-                Positioned(
-                  child:  Container(
-                    height: 36,
-                    width: 56,
-                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                    margin: const EdgeInsets.symmetric(horizontal: 25),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xffffbd00), width: 2),
-                        borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: Image.asset(
-                      isSaved ? MyImages.checked_basket : MyImages.basket_png,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
 
                 Positioned(
                     top: 0,
@@ -192,9 +168,9 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         circleButton(
-                          isLiked ? MyImages.heart_filled : MyImages.heart,
-                            () {
-                              _bloc.add(CLickLikedEvent(id: xitProduct?.id ?? -1, isLike: isLiked, name: xitProduct?.name ?? "", cost: xitProduct?.salePrice ?? 1, img: xitProduct?.image ?? MyImages.myPlaceHolder));
+                            isLiked ? MyImages.heart_filled : MyImages.heart,
+                                () {
+                              _bloc.add(CLickLikedEvent(id: product.id ?? -1, isLike: isLiked, name: product.name ?? "", cost: product.salePrice ?? 1, img: product.image ?? MyImages.myPlaceHolder));
                             }
                         ),
                         const SizedBox(height: 10,),
@@ -208,7 +184,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
             const SizedBox(height: 20,),
 
             Text(
-              xitProduct?.name ?? "Name",
+              product.name ?? "Name",
               textAlign: TextAlign.start,
               style: const TextStyle(
                 color: Colors.black,
@@ -238,17 +214,17 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
 
             const SizedBox(height: 12,),
             discountItem(
-                "${((xitProduct?.salePrice ?? 0) ~/ 24).toString().formatNumber()} so'mdan / 24 oy",
+                "${((product.salePrice ?? 0) ~/ 24).toString().formatNumber()} so'mdan / 24 oy",
                 const Color(0xfff7f7f7)
             ),
             const SizedBox(height: 8,),
             discountItem(
-                "${((xitProduct?.salePrice ?? 0) ~/ 12).toString().formatNumber()} so'm / 0•0•12",
+                "${((product.salePrice ?? 0) ~/ 12).toString().formatNumber()} so'm / 0•0•12",
                 LightColors.lightPeach
             ),
             const SizedBox(height: 20,),
             BoldText(
-              text: " ${(xitProduct?.salePrice ?? 0).toString().formatNumber()} so'm",
+              text: " ${(product.salePrice ?? 0).toString().formatNumber()} so'm",
               fontSize: 16,
             ),
             const SizedBox(height: 20,),
@@ -265,7 +241,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
       child: Container(
         height: 30,
         width: 30,
-        padding: EdgeInsets.all(5),
+        padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
             border: Border.all(color: LightColors.white, width: 1),
             shape: BoxShape.circle,
@@ -286,7 +262,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
       Color background,
       ) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(12),
@@ -332,18 +308,18 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
 
 
   Widget filterItem(
-    String title  ,
-    String icon
-  ) {
+      String title  ,
+      String icon
+      ) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Image.asset(
-          icon,
-          width: 20,
-          height: 24,
-          color: Colors.black
+            icon,
+            width: 20,
+            height: 24,
+            color: Colors.black
         ),
 
         const SizedBox(width: 12,),
@@ -356,28 +332,21 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
     );
   }
 
-  Widget brandChip(Category category) {
-    return InkWell(
-      onTap: () {
-        Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => ProductsByCategoryScreen(
-                slug: category.slug,
-                categoryName: category.name,
-              ),
-            ));
-      },
-      child: Container(
-        alignment: Alignment.center,
-        margin: const EdgeInsets.symmetric(horizontal: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: LightColors.primary2,
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: NormalText(
-          text: category.name,
-        ),
+  Widget brandChip(Parent category) {
+    return Container(
+      // constraints: const BoxConstraints(
+      //   minWidth: 100,
+      //   minHeight: 20,
+      // ),
+      alignment: Alignment.center,
+      margin: const EdgeInsets.symmetric(horizontal: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: LightColors.primary2,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: NormalText(
+        text: category.name,
       ),
     );
   }
@@ -407,7 +376,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
             highlightColor: Colors.transparent,
             // splashColor: Colors.transparent,
             onTap: () {
-              Navigator.pop(context);
+              Navigator.pop(context, true);
             },
             child: const Icon(
               Icons.arrow_back,

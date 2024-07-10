@@ -64,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
           body: BlocProvider.value(
             value: _bloc,
             child: RefreshIndicator(
+              color: LightColors.primary,
               onRefresh: () async{
                 _bloc.add(HomeLoadXitProductsEvent());
               },
@@ -603,6 +604,7 @@ class _HomeScreenState extends State<HomeScreen> {
   AppBar myAppBar() {
     return AppBar(
       backgroundColor: LightColors.primary,
+      scrolledUnderElevation: 0.0,
       title: Align(
           alignment: Alignment.topCenter,
           child: SvgPicture.asset(

@@ -48,7 +48,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         bookMark.isFavourite = !event.isSave;
       }
       else {
-        bookMark = BookmarkData(id: event.id, count: 1, name: event.name, cost: event.cost, img: event.img, isSave: false, isFavourite: !event.isSave);
+        bookMark = BookmarkData(id: event.id, count: 1, name: event.name, cost: event.cost, img: event.img, isSave: false, isFavourite: !event.isSave, isSelect: true);
       }
 
       MyBookmarkHelper.putData(event.id, bookMark);

@@ -5,230 +5,160 @@ part 'detail_responce.freezed.dart';
 
 @freezed
 class DetailResponse with _$DetailResponse {
-  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-  const factory DetailResponse(
-      bool? success,
-      String? message,
-      int? code,
-      @JsonKey(name: "data")
-      GetDataDetail? data,
-      ) = _DetailResponse;
+  const factory DetailResponse({
+    required bool success,
+    required String message,
+    required int code,
+    required DetailResponseData data,
+  }) = _DetailResponse;
 
-  factory DetailResponse.fromJson(Map<String, dynamic> json) =>
-      _$DetailResponseFromJson(json);
+  factory DetailResponse.fromJson(Map<String, dynamic> json) => _$DetailResponseFromJson(json);
 }
 
 @freezed
-class GetDataDetail with _$GetDataDetail {
-  const factory GetDataDetail(
-      GetDetail? data
-      ) = _GetDataDetail;
+class DetailResponseData with _$DetailResponseData {
+  const factory DetailResponseData({
+    required DataData data,
+  }) = _DetailResponseData;
 
-  factory GetDataDetail.fromJson(Map<String, dynamic> json) =>
-      _$GetDataDetailFromJson(json);
+  factory DetailResponseData.fromJson(Map<String, dynamic> json) => _$DetailResponseDataFromJson(json);
 }
 
 @freezed
-class GetDetail with _$GetDetail {
-  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-  const factory GetDetail(
-      int? id,
-      String? name,
-      String? guarantee,
-      Catalog? catalog,
-      List<String>? smallImages,
-      List<String>? largeImages,
-      String? availability,
-      String? model,
-      String? brand,
-      int? salePrice,
-      int? loanPrice,
-      String? oldPrice,
-      String? minimalLoanPrice,
-      String? code,
-      List<SaleMonths>? saleMonths,
-      int? reviewsCount,
-      String? reviewsMiddleRating,
-      Seo? seo,
-      List<Stickers>? stickers,
-      List<MainCharacters>? mainCharacters,
-      List<Breadcrumbs>? breadcrumbs,
-      String? description,
-      String? overview,
-      List<Characters>? characters,
-      List<AvailableStores>? availableStores,
-      List<Accessories>? accessories,
-      int? promotion0012Price,
-      ) = _GetDetail;
+class DataData with _$DataData {
+  const factory DataData({
+    required int id,
+    required String name,
+    required String guarantee,
+    @CatalogConverter() required Catalog catalog,
+    required List<dynamic> smallImages,
+    required List<dynamic> largeImages,
+    required Availability availability,
+    required dynamic model,
+    required String brand,
+    required int salePrice,
+    required int loanPrice,
+    required dynamic oldPrice,
+    required dynamic minimalLoanPrice,
+    required String code,
+    required List<dynamic> saleMonths,
+    required int reviewsCount,
+    required dynamic reviewsMiddleRating,
+    @CatalogConverter() required Catalog seo,
+    required List<dynamic> stickers,
+    required List<dynamic> mainCharacters,
+    required List<dynamic> offersByImage,
+    required List<dynamic> offersByCharacter,
+    required List<dynamic> breadcrumbs,
+    required String description,
+    required String overview,
+    required List<DataCharacter> characters,
+    required List<AvailableStore> availableStores,
+    required List<dynamic> files,
+    required List<Accessory> accessories,
+    required int promotion0012Price,
+  }) = _DataData;
 
-  factory GetDetail.fromJson(Map<String, dynamic> json) => _$GetDetailFromJson(json);
+  factory DataData.fromJson(Map<String, dynamic> json) => _$DataDataFromJson(json);
 }
 
 @freezed
-class Catalog with _$Catalog {
-  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-  const factory Catalog(
-      String? name,
-      int? minPrice,
-      int? maxPrice,
-      ) = _Catalog;
+class Accessory with _$Accessory {
+  const factory Accessory({
+    required String name,
+    required List<Product> products,
+  }) = _Accessory;
 
-  factory Catalog.fromJson(Map<String, dynamic> json) =>
-      _$CatalogFromJson(json);
+  factory Accessory.fromJson(Map<String, dynamic> json) => _$AccessoryFromJson(json);
 }
 
 @freezed
-class SaleMonths with _$SaleMonths {
-  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-  const factory SaleMonths(
-      int? id,
-      String? name,
-      String? key,
-      String? image,
-      ) = _SaleMonths;
+class Product with _$Product {
+  const factory Product({
+    required int id,
+    required String name,
+    required String image,
+    required Availability availability,
+    required dynamic axiomMonthlyPrice,
+    required int salePrice,
+    required int allCount,
+  }) = _Product;
 
-  factory SaleMonths.fromJson(Map<String, dynamic> json) =>
-      _$SaleMonthsFromJson(json);
+  factory Product.fromJson(Map<String, dynamic> json) => _$ProductFromJson(json);
 }
 
 @freezed
-class Seo with _$Seo {
-  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-  const factory Seo(
-      String? title,
-      String? description,
-      String? keywords,
-      String? image,
-      String? scriptSeo,
-      ) = _Seo;
+class AvailableStore with _$AvailableStore {
+  const factory AvailableStore({
+    required int id,
+    required String name,
+    required String lat,
+    required String long,
+    required Phone phone,
+    required String address,
+    String? description,
+    required String workTime,
+  }) = _AvailableStore;
 
-  factory Seo.fromJson(Map<String, dynamic> json) => _$SeoFromJson(json);
+  factory AvailableStore.fromJson(Map<String, dynamic> json) => _$AvailableStoreFromJson(json);
 }
 
 @freezed
-class Stickers with _$Stickers {
-  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-  const factory Stickers(
-      String? name,
-      String? backgroundColor,
-      String? textColor,
-      bool? isImage,
-      bool? showInCard,
-      String? image,
-      ) = _Stickers;
+class DataCharacter with _$DataCharacter {
+  const factory DataCharacter({
+    required String name,
+    required List<CharacterCharacter> characters,
+  }) = _DataCharacter;
 
-  factory Stickers.fromJson(Map<String, dynamic> json) =>
-      _$StickersFromJson(json);
+  factory DataCharacter.fromJson(Map<String, dynamic> json) => _$DataCharacterFromJson(json);
 }
 
 @freezed
-class MainCharacters with _$MainCharacters {
-  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-  const factory MainCharacters(
-      String? name,
-      String? value,
-      ) = _MainCharacters;
+class CharacterCharacter with _$CharacterCharacter {
+  const factory CharacterCharacter({
+    String? name,
+    String? value,
+  }) = _CharacterCharacter;
 
-  factory MainCharacters.fromJson(Map<String, dynamic> json) =>
-      _$MainCharactersFromJson(json);
+  factory CharacterCharacter.fromJson(Map<String, dynamic> json) => _$CharacterCharacterFromJson(json);
 }
 
-@freezed
-class Breadcrumbs with _$Breadcrumbs {
-  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-  const factory Breadcrumbs(
-      String? name,
-      String? slug,
-      int? id,
-      String? type,
-      ) = _Breadcrumbs;
-
-  factory Breadcrumbs.fromJson(Map<String, dynamic> json) =>
-      _$BreadcrumbsFromJson(json);
+enum Availability {
+  OPEN_TO_CART,
+  WITH_MANAGER
 }
 
-@freezed
-class Characters with _$Characters {
-  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-  const factory Characters(
-      String? name,
-      List<Characters>? characters,
-      ) = _Characters;
-
-  factory Characters.fromJson(Map<String, dynamic> json) =>
-      _$CharactersFromJson(json);
+enum Phone {
+  THE_998555036006,
+  THE_998555046006
 }
 
-@freezed
-class AvailableStores with _$AvailableStores {
-  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-  const factory AvailableStores(
-      int? id,
-      String? name,
-      String? lat,
-      String? long,
-      String? phone,
-      String? address,
-      String? description,
-      String? workTime,
-      ) = _AvailableStores;
+class Catalog {
+  Catalog();
 
-  factory AvailableStores.fromJson(Map<String, dynamic> json) =>
-      _$AvailableStoresFromJson(json);
+  factory Catalog.fromJson(Map<String, dynamic> json) {
+    // Customize this part according to how you want to deserialize your Catalog
+    return Catalog();
+  }
+
+  Map<String, dynamic> toJson() {
+    // Customize this part according to how you want to serialize your Catalog
+    return {};
+  }
 }
 
-@freezed
-class Accessories with _$Accessories {
-  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-  const factory Accessories(
-      String? name,
-      List<Products>? products,
-      ) = _Accessories;
+class CatalogConverter implements JsonConverter<Catalog, Map<String, dynamic>> {
+  const CatalogConverter();
 
-  factory Accessories.fromJson(Map<String, dynamic> json) =>
-      _$AccessoriesFromJson(json);
-}
+  @override
+  Catalog fromJson(Map<String, dynamic> json) {
+    // Customize this part according to how you want to deserialize your Catalog
+    return Catalog.fromJson(json);
+  }
 
-@freezed
-class Products with _$Products {
-  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-  const factory Products(
-      int? id,
-      String? name,
-      String? image,
-      List<SaleMonths>? saleMonths,
-      List<Stickers>? stickers,
-      String? availability,
-      String? discount,
-      String? code,
-      List<MainCharacters>? mainCharacters,
-      int? salePrice,
-      String? fSalePrice,
-      String? oldPrice,
-      String? fOldPrice,
-      double? loanPrice,
-      String? fLoanPrice,
-      String? axiomMonthlyPrice,
-      int? reviewsCount,
-      int? reviewsAverage,
-      int? allCount,
-      Brand? brand,
-      String? lowPrice,
-      String? categoryId,
-      ) = _Products;
-
-  factory Products.fromJson(Map<String, dynamic> json) =>
-      _$ProductsFromJson(json);
-}
-
-@freezed
-class Brand with _$Brand {
-  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-  const factory Brand(
-      int? id,
-      String? slug,
-      String? name,
-      ) = _Brand;
-
-  factory Brand.fromJson(Map<String, dynamic> json) => _$BrandFromJson(json);
+  @override
+  Map<String, dynamic> toJson(Catalog catalog) {
+    // Customize this part according to how you want to serialize your Catalog
+    return catalog.toJson();
+  }
 }

@@ -24,13 +24,14 @@ class BookmarkDataAdapter extends TypeAdapter<BookmarkData> {
       img: fields[3] as String,
       isSave: fields[6] as bool,
       isFavourite: fields[5] as bool,
+      isSelect: fields[7] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, BookmarkData obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class BookmarkDataAdapter extends TypeAdapter<BookmarkData> {
       ..writeByte(5)
       ..write(obj.isFavourite)
       ..writeByte(6)
-      ..write(obj.isSave);
+      ..write(obj.isSave)
+      ..writeByte(7)
+      ..write(obj.isSelect);
   }
 
   @override

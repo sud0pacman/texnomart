@@ -25,6 +25,9 @@ class BookmarkData extends HiveObject {
   @HiveField(6)
   bool isSave;
 
+  @HiveField(7)
+  bool isSelect;
+
   BookmarkData(
       {required this.id,
       required this.count,
@@ -32,5 +35,7 @@ class BookmarkData extends HiveObject {
       required this.cost,
       required this.img,
       required this.isSave,
-      required this.isFavourite});
+      required this.isFavourite,
+        required this.isSelect
+  });
 }

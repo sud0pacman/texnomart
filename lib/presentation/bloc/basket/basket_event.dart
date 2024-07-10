@@ -30,3 +30,18 @@ class ClickLiked extends BasketEvent {
 
   ClickLiked({required this.isLiked, required this.id});
 }
+
+class ClickSelect extends BasketEvent {
+  final int id;
+  final bool isSelected;
+
+  ClickSelect({required this.isSelected, required this.id});
+}
+
+class ClickAllSelect extends BasketEvent {
+  final bool isSelected;
+
+  ClickAllSelect({required this.isSelected});
+}
+
+class DeleteAllEvent extends BasketEvent {}

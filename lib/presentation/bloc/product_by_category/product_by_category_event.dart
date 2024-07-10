@@ -1,6 +1,5 @@
 part of 'product_by_category_bloc.dart';
 
-
 abstract class ProductByCategoryEvent {}
 
 class LoadProductByCategoryEvent extends ProductByCategoryEvent {
@@ -8,8 +7,11 @@ class LoadProductByCategoryEvent extends ProductByCategoryEvent {
 
   LoadProductByCategoryEvent({required this.slug});
 }
+
 class Back extends ProductByCategoryEvent {}
+
 class ClickProductEvent extends ProductByCategoryEvent {}
+
 class CLickLikedEvent extends ProductByCategoryEvent {
   final int id;
   final bool isLike;
@@ -17,5 +19,10 @@ class CLickLikedEvent extends ProductByCategoryEvent {
   final int cost;
   final String img;
 
-  CLickLikedEvent({required this.id, required this.isLike, required this.name, required this.cost, required this.img});
+  CLickLikedEvent(
+      {required this.id,
+      required this.isLike,
+      required this.name,
+      required this.cost,
+      required this.img});
 }

@@ -51,65 +51,75 @@ class _BasketScreenState extends State<BasketScreen> {
             state.basket.remove(state.remove);
             cart.removeItem();
           }
-          if(state.isUpdate) {
+          if (state.isUpdate) {
             setState(() {
+
             });
+          }
+
+          if(state.deleteCount > 0) {
+            for(var i = 1; i <= state.deleteCount; ++i) {
+              cart.removeItem();
+            }
           }
         },
         builder: (context, state) {
           return SafeArea(
             child: Scaffold(
               backgroundColor: Colors.white,
-              appBar: myAppBar(),
+              appBar: myAppBar('Savatcha'),
               body: RefreshIndicator(
-                color: LightColors.primary,
-                onRefresh: () async {
-                  _bloc.add(BasketLoadProductsEvents());
-                },
-                child: state.basket.isEmpty ? SingleChildScrollView(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            child: Center(
-                              child: emptyField(),
-                            ),
-                          )
-                        : Column(
+                  color: LightColors.primary,
+                  onRefresh: () async {
+                    _bloc.add(BasketLoadProductsEvents());
+                  },
+                  child: state.basket.isEmpty
+                      ? SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          child: Center(
+                            child: emptyField(),
+                          ),
+                        )
+                      : SingleChildScrollView(
+                          child: Column(
                             children: [
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              allDeleteSection(),
-                              const SizedBox(
-                                height: 20,
-                              ),
+                              const SizedBox(height: 20),
+                              allDeleteSection(state.isAllSelected),
+                              const SizedBox(height: 20),
                               line(),
-                              const SizedBox(
-                                height: 15,
+                              const SizedBox(height: 15),
+                              ListView.separated(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.vertical,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: state.basket.length,
+                                separatorBuilder: (context, index) {
+                                  return Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const SizedBox(height: 25),
+                                      line(),
+                                      const SizedBox(height: 25),
+                                    ],
+                                  );
+                                },
+                                itemBuilder: (context, index) {
+                                  var product = state.basket[index];
+                                  return productItem(product, product.count,
+                                      product.isFavourite, product.id);
+                                },
                               ),
-                              Expanded(
-                                child: ListView.separated(
-                                  shrinkWrap: true,
-                                  itemCount: state.basket.length,
-                                  separatorBuilder: (context, index) {
-                                    return Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const SizedBox(height: 25,),
-                                        line(),
-                                        const SizedBox(height: 25,),
-                                      ],
-                                    );
-                                  },
-                                  itemBuilder: (context, index) {
-                                    var id = state.basket[index].id;
-                                    var count =  state.basket[index].count;
-                                    var isLiked = state.basket[index].isFavourite;
-                                    return productItem(state.basket[index], count, isLiked, id);
-                                  }
-                                ),
-                              ),
+
+                              const SizedBox(height: 20,),
+                              line(),
+                              const SizedBox(height: 20,),
+                              totalPrice(state.totalPrice, state.totalCount),
+                              const SizedBox(height: 15,),
+                              paymentProcessing(state.totalPrice),
+                              const SizedBox(height: 25,),
                             ],
                           ),
-              ),
+                        )),
             ),
           );
         },
@@ -117,8 +127,103 @@ class _BasketScreenState extends State<BasketScreen> {
     );
   }
 
+
+  Widget paymentProcessing(int totalPrice) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.withOpacity(.3), width: 1),
+          borderRadius: BorderRadius.circular(15)
+      ),
+      child: Column(
+        children: [
+          Container(
+            height: 42,
+            width: MediaQuery.of(context).size.width,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.grey.withAlpha(40),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                NormalText(
+                  text: "Muddatli to'lo'v ",
+                  color: Colors.black87,
+                  fontSize: 14,
+                ),
+
+                BoldText(
+                  text: "${(totalPrice ~/ 24).toString().formatNumber()} so'm dan",
+                  color: Colors.black87,
+                  fontSize: 15,
+                ),
+
+                BoldText(
+                  text: " / 24 oy",
+                  color: Colors.black87,
+                  fontSize: 13,
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 15,),
+
+          myButton(
+            "Muddatli to'lo'vni rasmiylashtirish",
+            background: totalPrice != 0 ? Colors.black : Colors.grey,
+            textSize: 15,
+            textColor: Colors.white
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget totalPrice(int totalPrice, int totalProductCount) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.withOpacity(.3), width: 1),
+        borderRadius: BorderRadius.circular(15)
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 10,),
+          const BoldText(text: "Jami"),
+          const SizedBox(height: 30,),
+          totalItem("${totalProductCount.toString().formatNumber()} ta mahsulot", "${totalPrice.toString().formatNumber()} so'm", 16),
+          const SizedBox(height: 35,),
+          totalItem("To'lash uchun", "${totalPrice.toString().formatNumber()} so'm", 18),
+          const SizedBox(height: 35,),
+          myButton(
+            "Haridni rasmiylashtirish",
+            height: 42,
+            background: totalPrice != 0 ? LightColors.primary : LightColors.primary.withAlpha(90),
+            textColor: totalPrice != 0 ? Colors.black : Colors.black.withAlpha(90),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget totalItem(String title, String res, double textSize) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        NormalText(text: title, color: Colors.black87, fontSize: textSize,),
+        BoldText(text: res, color: Colors.black, fontSize: textSize,),
+      ],
+    );
+  }
+
   Widget productItem(BookmarkData detail, int count, bool isLiked, int id) {
-    bool isSelected = true;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -192,11 +297,11 @@ class _BasketScreenState extends State<BasketScreen> {
                     child: InkWell(
                       onTap: () {
                         setState(() {
-                          isSelected = !isSelected;
+                          _bloc.add(ClickSelect(isSelected: detail.isSelect, id: detail.id));
                         });
                       },
                       child: CustomCheckbox(
-                        value: isSelected, // or false
+                        value: detail.isSelect, // or false
                       ),
                     ),
                   ),
@@ -312,56 +417,53 @@ class _BasketScreenState extends State<BasketScreen> {
 
   Widget line() {
     return Container(
-      height: 1.5,
+      height: 1,
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.symmetric(horizontal: 15,),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: Colors.grey.withOpacity(.2),
         borderRadius: BorderRadius.circular(1)
       ),
     );
   }
 
 
-  Widget allDeleteSection() {
+  Widget allDeleteSection(bool isSelected) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            "Tanlanglarni \no'chirish",
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 14,
-              fontWeight: FontWeight.normal,
+          InkWell(
+            onTap: () {
+              deleteSelected();
+            },
+            child: const Text(
+              "Tanlanglarni \no'chirish",
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+              ),
             ),
           ),
           const Spacer(),
           const NormalText(text: 'Hammasini tanlash', fontSize: 14, color: Colors.black),
           const SizedBox(width: 24,),
-          Container(
-            decoration: BoxDecoration(
-              color: Color(0xffffbd00),
-              borderRadius: BorderRadius.circular(6),
+          InkWell(
+            onTap: () {
+              _bloc.add(ClickAllSelect(isSelected: isSelected));
+            },
+            child: CustomCheckbox(
+              value: isSelected,
             ),
-            width: 22,
-            height: 22,
-            child:  const Icon(
-              CupertinoIcons.checkmark_alt,
-              size: 20.0,
-              color: Colors.black,
-            )
-          ),
+          )
         ],
       ),
     );
   }
 
-  ValueChanged<bool?>? myOnChanged() {
-    return null;
-  }
 
   Widget emptyField() {
     return Center(
@@ -400,13 +502,40 @@ class _BasketScreenState extends State<BasketScreen> {
     );
   }
 
-  AppBar myAppBar() {
-    return AppBar(
-      backgroundColor: LightColors.primary,
-      title: Align(
-        alignment: Alignment.centerLeft,
-        child: NormalText(text: 'Savatcha', fontSize: 18,),
-      ),
+  Future deleteSelected() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text('Tanlanganlarni o\'chiris'),
+          // content: Text('Are you sure you want to delete the selected items?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const BoldText(
+                text: "Bekrol qilish",
+                color: Colors.blueAccent,
+                fontSize: 14,
+              ),
+            ),
+
+            TextButton(
+              onPressed: () {
+                _bloc.add(DeleteAllEvent());
+                Navigator.pop(context);
+              },
+              child: const BoldText(
+                text: "O'chirish",
+                color: Colors.red,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

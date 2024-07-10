@@ -45,6 +45,7 @@ class FavouriteBloc extends Bloc<FavouriteEvent, FavouriteState> {
             cost: event.cost,
             img: event.img,
             isSave: true,
+            isSelect: true,
             isFavourite: !event.isLiked);
       }
 
@@ -64,7 +65,9 @@ class FavouriteBloc extends Bloc<FavouriteEvent, FavouriteState> {
           cost: event.cost,
           img: event.img,
           isSave: true,
-          isFavourite: event.isLiked);
+          isFavourite: event.isLiked,
+          isSelect: true
+      );
 
       MyBookmarkHelper.putData(event.id, bookMark);
 

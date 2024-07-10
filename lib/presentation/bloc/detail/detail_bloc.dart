@@ -54,13 +54,15 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
     await MyBookmarkHelper.putData(
         event.key,
         BookmarkData(
-            id: event.key,
-            count: 1,
-            name: event.name,
-            cost: event.cost,
-            img: event.img,
-            isSave: true,
-            isFavourite: state.isLiked));
+          id: event.key,
+          count: 1,
+          name: event.name,
+          cost: event.cost,
+          img: event.img,
+          isSave: true,
+          isFavourite: state.isLiked,
+          isSelect: true
+        ));
 
     emit(state.copyWith(isSaved: true));
   }
