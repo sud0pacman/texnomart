@@ -39,6 +39,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
   void initState() {
     super.initState();
 
+    _bloc.add(LoadCheeps(slug: widget.slug));
     _bloc.add(LoadProductByCategoryEvent(slug: widget.slug));
   }
 
@@ -58,16 +59,14 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: myAppBar(),
+        appBar: myAppBar(widget.categoryName),
         body: BlocProvider.value(
           value: _bloc,
           child: BlocConsumer<ProductByCategoryBloc, ProductByCategoryState>(
             listener: (context, state) {},
             builder: (context, state) {
               print("********************************** product by category screen ${state.filteredProduct}");
-              return state.loading == true
-                ? loading()
-                : xitProductList(state.filteredProduct, state.bookMarks, state.cheeps);
+              return xitProductList(state.filteredProduct, state.bookMarks, state.cheeps, state.loading);
             },
           ),
         ),
@@ -77,7 +76,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
 
 
 
-  Widget xitProductList(List<MyProductData> filteredProduct, List<BookmarkData> basket, List<Category> cheeps) {
+  Widget xitProductList(List<MyProductData> filteredProduct, List<BookmarkData> basket, List<Category> cheeps, bool isLoading) {
     return Column(
       children: [
         const SizedBox(height: 15,),
@@ -95,7 +94,8 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
         Flexible(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: AlignedGridView.count(
+            child: isLoading ? loading() :
+            AlignedGridView.count(
               shrinkWrap: true,
               physics: const ScrollPhysics(),
               crossAxisCount: 2,
@@ -240,11 +240,14 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
             Row(
               children: [
                 Expanded(
-                  child: BoldText(
-                    text: " ${(xitProduct.cost).toString().formatNumber()} so'm",
-                    color: Colors.black,
-                    fontSize: 14,
-                    height: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: BoldText(
+                      text: " ${(xitProduct.cost).toString().formatNumber()} so'm",
+                      color: Colors.black,
+                      fontSize: 14,
+                      height: 1,
+                    ),
                   ),
                 ),
                 InkWell(
@@ -351,7 +354,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
   Widget filterSection() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
@@ -396,6 +399,8 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
 
   Widget brandChip(Category category, int index) {
     return InkWell(
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
       onTap: () {
         if(selectedCheep == index) {
           selectedCheep = -1;
@@ -442,40 +447,6 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
       alignment: Alignment.center,
       child: const CircularProgressIndicator(
         color: LightColors.primary,
-      ),
-    );
-  }
-
-
-
-  AppBar myAppBar() {
-    return AppBar(
-      backgroundColor: LightColors.primary,
-      automaticallyImplyLeading: false,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          InkWell(
-            highlightColor: Colors.transparent,
-            // splashColor: Colors.transparent,
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-              size: 24,
-            ),
-          ),
-
-          const SizedBox(width: 32,),
-
-          NormalText(
-            text: widget.categoryName,
-            fontSize: 18,
-          )
-        ],
       ),
     );
   }

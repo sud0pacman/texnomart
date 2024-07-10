@@ -40,8 +40,8 @@ class CategoryClickBasketEvent extends ProductByCategoryEvent {
   CategoryClickBasketEvent({required this.id, required this.isSave, required this.name, required this.cost, required this.img, required this.index});
 }
 
-class LoadProductByCheep extends ProductByCategoryEvent {
+class LoadCheeps extends ProductByCategoryEvent {
   final String slug;
 
-  LoadProductByCheep({required this.slug});
+  LoadCheeps({required this.slug});
 }

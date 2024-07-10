@@ -25,12 +25,14 @@ class ProductByCategoryBloc extends Bloc<ProductByCategoryEvent, ProductByCatego
       List<MyProductData> myProducts = networkDataToMyData(networkProducts);
 
       emit(state.copyWith(loading: false, filteredProduct: myProducts, bookMarks: MyBookmarkHelper.getIds()));
+    });
 
+    on<LoadCheeps>((event, emit) async{
       var cheepResponse = await di<ApiService>().getCategoryCheeps(slug: event.slug);
 
       List<Category> cheeps = cheepResponse.data.categories;
-      
-      print("********************************* category bloc ${cheeps.length}");
+
+      print("********************************* category bloc cheeps ${cheeps.length}");
 
       emit(state.copyWith(cheeps: cheeps));
     });
@@ -66,20 +68,11 @@ class ProductByCategoryBloc extends Bloc<ProductByCategoryEvent, ProductByCatego
 
       await MyBookmarkHelper.putData(event.id, bookMark);
 
-      emit(state.copyWith(bookMarks: MyBookmarkHelper.getIds()));
-    });
+      var data = state.filteredProduct[event.index];
+      data.isSave = true;
+      state.filteredProduct[event.index] = data;
 
-    on<LoadProductByCheep>((event, emit) async{
-      emit(state.copyWith(loading: true));
-
-      var searched = await di<ApiService>().getSelectedCategory(slug: event.slug);
-      // var products = searched.data.products;
-      //
-      // print("************************** InnerCategoryProductsBloc ${products.length}");
-      //
-      // var res = cheepDataToMyData(products);
-
-      emit(state.copyWith(loading: false, filteredProduct: []));
+      emit(state.copyWith(filteredProduct: state.filteredProduct));
     });
   }
 
