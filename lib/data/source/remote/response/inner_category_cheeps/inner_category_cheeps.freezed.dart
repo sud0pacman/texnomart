@@ -1,0 +1,651 @@
+// coverage:ignore-file
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'inner_category_cheeps.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+T _$identity<T>(T value) => value;
+
+final _privateConstructorUsedError = UnsupportedError(
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+
+InnerCategoryCheeps _$InnerCategoryCheepsFromJson(Map<String, dynamic> json) {
+  return _InnerCategoryCheeps.fromJson(json);
+}
+
+/// @nodoc
+mixin _$InnerCategoryCheeps {
+  bool get success => throw _privateConstructorUsedError;
+  String get message => throw _privateConstructorUsedError;
+  int get code => throw _privateConstructorUsedError;
+  Data get data => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $InnerCategoryCheepsCopyWith<InnerCategoryCheeps> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $InnerCategoryCheepsCopyWith<$Res> {
+  factory $InnerCategoryCheepsCopyWith(
+          InnerCategoryCheeps value, $Res Function(InnerCategoryCheeps) then) =
+      _$InnerCategoryCheepsCopyWithImpl<$Res, InnerCategoryCheeps>;
+  @useResult
+  $Res call({bool success, String message, int code, Data data});
+
+  $DataCopyWith<$Res> get data;
+}
+
+/// @nodoc
+class _$InnerCategoryCheepsCopyWithImpl<$Res, $Val extends InnerCategoryCheeps>
+    implements $InnerCategoryCheepsCopyWith<$Res> {
+  _$InnerCategoryCheepsCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? success = null,
+    Object? message = null,
+    Object? code = null,
+    Object? data = null,
+  }) {
+    return _then(_value.copyWith(
+      success: null == success
+          ? _value.success
+          : success // ignore: cast_nullable_to_non_nullable
+              as bool,
+      message: null == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String,
+      code: null == code
+          ? _value.code
+          : code // ignore: cast_nullable_to_non_nullable
+              as int,
+      data: null == data
+          ? _value.data
+          : data // ignore: cast_nullable_to_non_nullable
+              as Data,
+    ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $DataCopyWith<$Res> get data {
+    return $DataCopyWith<$Res>(_value.data, (value) {
+      return _then(_value.copyWith(data: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$InnerCategoryCheepsImplCopyWith<$Res>
+    implements $InnerCategoryCheepsCopyWith<$Res> {
+  factory _$$InnerCategoryCheepsImplCopyWith(_$InnerCategoryCheepsImpl value,
+          $Res Function(_$InnerCategoryCheepsImpl) then) =
+      __$$InnerCategoryCheepsImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({bool success, String message, int code, Data data});
+
+  @override
+  $DataCopyWith<$Res> get data;
+}
+
+/// @nodoc
+class __$$InnerCategoryCheepsImplCopyWithImpl<$Res>
+    extends _$InnerCategoryCheepsCopyWithImpl<$Res, _$InnerCategoryCheepsImpl>
+    implements _$$InnerCategoryCheepsImplCopyWith<$Res> {
+  __$$InnerCategoryCheepsImplCopyWithImpl(_$InnerCategoryCheepsImpl _value,
+      $Res Function(_$InnerCategoryCheepsImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? success = null,
+    Object? message = null,
+    Object? code = null,
+    Object? data = null,
+  }) {
+    return _then(_$InnerCategoryCheepsImpl(
+      success: null == success
+          ? _value.success
+          : success // ignore: cast_nullable_to_non_nullable
+              as bool,
+      message: null == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String,
+      code: null == code
+          ? _value.code
+          : code // ignore: cast_nullable_to_non_nullable
+              as int,
+      data: null == data
+          ? _value.data
+          : data // ignore: cast_nullable_to_non_nullable
+              as Data,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$InnerCategoryCheepsImpl implements _InnerCategoryCheeps {
+  _$InnerCategoryCheepsImpl(
+      {required this.success,
+      required this.message,
+      required this.code,
+      required this.data});
+
+  factory _$InnerCategoryCheepsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$InnerCategoryCheepsImplFromJson(json);
+
+  @override
+  final bool success;
+  @override
+  final String message;
+  @override
+  final int code;
+  @override
+  final Data data;
+
+  @override
+  String toString() {
+    return 'InnerCategoryCheeps(success: $success, message: $message, code: $code, data: $data)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$InnerCategoryCheepsImpl &&
+            (identical(other.success, success) || other.success == success) &&
+            (identical(other.message, message) || other.message == message) &&
+            (identical(other.code, code) || other.code == code) &&
+            (identical(other.data, data) || other.data == data));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, success, message, code, data);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$InnerCategoryCheepsImplCopyWith<_$InnerCategoryCheepsImpl> get copyWith =>
+      __$$InnerCategoryCheepsImplCopyWithImpl<_$InnerCategoryCheepsImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$InnerCategoryCheepsImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _InnerCategoryCheeps implements InnerCategoryCheeps {
+  factory _InnerCategoryCheeps(
+      {required final bool success,
+      required final String message,
+      required final int code,
+      required final Data data}) = _$InnerCategoryCheepsImpl;
+
+  factory _InnerCategoryCheeps.fromJson(Map<String, dynamic> json) =
+      _$InnerCategoryCheepsImpl.fromJson;
+
+  @override
+  bool get success;
+  @override
+  String get message;
+  @override
+  int get code;
+  @override
+  Data get data;
+  @override
+  @JsonKey(ignore: true)
+  _$$InnerCategoryCheepsImplCopyWith<_$InnerCategoryCheepsImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+Data _$DataFromJson(Map<String, dynamic> json) {
+  return _Data.fromJson(json);
+}
+
+/// @nodoc
+mixin _$Data {
+  Parent get parent => throw _privateConstructorUsedError;
+  List<Parent> get categories => throw _privateConstructorUsedError;
+  bool get hasChildImage => throw _privateConstructorUsedError;
+  bool get hasChild => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $DataCopyWith<Data> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $DataCopyWith<$Res> {
+  factory $DataCopyWith(Data value, $Res Function(Data) then) =
+      _$DataCopyWithImpl<$Res, Data>;
+  @useResult
+  $Res call(
+      {Parent parent,
+      List<Parent> categories,
+      bool hasChildImage,
+      bool hasChild});
+
+  $ParentCopyWith<$Res> get parent;
+}
+
+/// @nodoc
+class _$DataCopyWithImpl<$Res, $Val extends Data>
+    implements $DataCopyWith<$Res> {
+  _$DataCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? parent = null,
+    Object? categories = null,
+    Object? hasChildImage = null,
+    Object? hasChild = null,
+  }) {
+    return _then(_value.copyWith(
+      parent: null == parent
+          ? _value.parent
+          : parent // ignore: cast_nullable_to_non_nullable
+              as Parent,
+      categories: null == categories
+          ? _value.categories
+          : categories // ignore: cast_nullable_to_non_nullable
+              as List<Parent>,
+      hasChildImage: null == hasChildImage
+          ? _value.hasChildImage
+          : hasChildImage // ignore: cast_nullable_to_non_nullable
+              as bool,
+      hasChild: null == hasChild
+          ? _value.hasChild
+          : hasChild // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ParentCopyWith<$Res> get parent {
+    return $ParentCopyWith<$Res>(_value.parent, (value) {
+      return _then(_value.copyWith(parent: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$DataImplCopyWith<$Res> implements $DataCopyWith<$Res> {
+  factory _$$DataImplCopyWith(
+          _$DataImpl value, $Res Function(_$DataImpl) then) =
+      __$$DataImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {Parent parent,
+      List<Parent> categories,
+      bool hasChildImage,
+      bool hasChild});
+
+  @override
+  $ParentCopyWith<$Res> get parent;
+}
+
+/// @nodoc
+class __$$DataImplCopyWithImpl<$Res>
+    extends _$DataCopyWithImpl<$Res, _$DataImpl>
+    implements _$$DataImplCopyWith<$Res> {
+  __$$DataImplCopyWithImpl(_$DataImpl _value, $Res Function(_$DataImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? parent = null,
+    Object? categories = null,
+    Object? hasChildImage = null,
+    Object? hasChild = null,
+  }) {
+    return _then(_$DataImpl(
+      parent: null == parent
+          ? _value.parent
+          : parent // ignore: cast_nullable_to_non_nullable
+              as Parent,
+      categories: null == categories
+          ? _value._categories
+          : categories // ignore: cast_nullable_to_non_nullable
+              as List<Parent>,
+      hasChildImage: null == hasChildImage
+          ? _value.hasChildImage
+          : hasChildImage // ignore: cast_nullable_to_non_nullable
+              as bool,
+      hasChild: null == hasChild
+          ? _value.hasChild
+          : hasChild // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$DataImpl implements _Data {
+  _$DataImpl(
+      {required this.parent,
+      required final List<Parent> categories,
+      required this.hasChildImage,
+      required this.hasChild})
+      : _categories = categories;
+
+  factory _$DataImpl.fromJson(Map<String, dynamic> json) =>
+      _$$DataImplFromJson(json);
+
+  @override
+  final Parent parent;
+  final List<Parent> _categories;
+  @override
+  List<Parent> get categories {
+    if (_categories is EqualUnmodifiableListView) return _categories;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_categories);
+  }
+
+  @override
+  final bool hasChildImage;
+  @override
+  final bool hasChild;
+
+  @override
+  String toString() {
+    return 'Data(parent: $parent, categories: $categories, hasChildImage: $hasChildImage, hasChild: $hasChild)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DataImpl &&
+            (identical(other.parent, parent) || other.parent == parent) &&
+            const DeepCollectionEquality()
+                .equals(other._categories, _categories) &&
+            (identical(other.hasChildImage, hasChildImage) ||
+                other.hasChildImage == hasChildImage) &&
+            (identical(other.hasChild, hasChild) ||
+                other.hasChild == hasChild));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      parent,
+      const DeepCollectionEquality().hash(_categories),
+      hasChildImage,
+      hasChild);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DataImplCopyWith<_$DataImpl> get copyWith =>
+      __$$DataImplCopyWithImpl<_$DataImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$DataImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _Data implements Data {
+  factory _Data(
+      {required final Parent parent,
+      required final List<Parent> categories,
+      required final bool hasChildImage,
+      required final bool hasChild}) = _$DataImpl;
+
+  factory _Data.fromJson(Map<String, dynamic> json) = _$DataImpl.fromJson;
+
+  @override
+  Parent get parent;
+  @override
+  List<Parent> get categories;
+  @override
+  bool get hasChildImage;
+  @override
+  bool get hasChild;
+  @override
+  @JsonKey(ignore: true)
+  _$$DataImplCopyWith<_$DataImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+Parent _$ParentFromJson(Map<String, dynamic> json) {
+  return _Parent.fromJson(json);
+}
+
+/// @nodoc
+mixin _$Parent {
+  int get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String? get image => throw _privateConstructorUsedError;
+  String get slug => throw _privateConstructorUsedError;
+  bool get hasChild => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $ParentCopyWith<Parent> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ParentCopyWith<$Res> {
+  factory $ParentCopyWith(Parent value, $Res Function(Parent) then) =
+      _$ParentCopyWithImpl<$Res, Parent>;
+  @useResult
+  $Res call({int id, String name, String? image, String slug, bool hasChild});
+}
+
+/// @nodoc
+class _$ParentCopyWithImpl<$Res, $Val extends Parent>
+    implements $ParentCopyWith<$Res> {
+  _$ParentCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? image = freezed,
+    Object? slug = null,
+    Object? hasChild = null,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      image: freezed == image
+          ? _value.image
+          : image // ignore: cast_nullable_to_non_nullable
+              as String?,
+      slug: null == slug
+          ? _value.slug
+          : slug // ignore: cast_nullable_to_non_nullable
+              as String,
+      hasChild: null == hasChild
+          ? _value.hasChild
+          : hasChild // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$ParentImplCopyWith<$Res> implements $ParentCopyWith<$Res> {
+  factory _$$ParentImplCopyWith(
+          _$ParentImpl value, $Res Function(_$ParentImpl) then) =
+      __$$ParentImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({int id, String name, String? image, String slug, bool hasChild});
+}
+
+/// @nodoc
+class __$$ParentImplCopyWithImpl<$Res>
+    extends _$ParentCopyWithImpl<$Res, _$ParentImpl>
+    implements _$$ParentImplCopyWith<$Res> {
+  __$$ParentImplCopyWithImpl(
+      _$ParentImpl _value, $Res Function(_$ParentImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? image = freezed,
+    Object? slug = null,
+    Object? hasChild = null,
+  }) {
+    return _then(_$ParentImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      image: freezed == image
+          ? _value.image
+          : image // ignore: cast_nullable_to_non_nullable
+              as String?,
+      slug: null == slug
+          ? _value.slug
+          : slug // ignore: cast_nullable_to_non_nullable
+              as String,
+      hasChild: null == hasChild
+          ? _value.hasChild
+          : hasChild // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ParentImpl implements _Parent {
+  _$ParentImpl(
+      {required this.id,
+      required this.name,
+      this.image,
+      required this.slug,
+      required this.hasChild});
+
+  factory _$ParentImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ParentImplFromJson(json);
+
+  @override
+  final int id;
+  @override
+  final String name;
+  @override
+  final String? image;
+  @override
+  final String slug;
+  @override
+  final bool hasChild;
+
+  @override
+  String toString() {
+    return 'Parent(id: $id, name: $name, image: $image, slug: $slug, hasChild: $hasChild)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ParentImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.image, image) || other.image == image) &&
+            (identical(other.slug, slug) || other.slug == slug) &&
+            (identical(other.hasChild, hasChild) ||
+                other.hasChild == hasChild));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, name, image, slug, hasChild);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ParentImplCopyWith<_$ParentImpl> get copyWith =>
+      __$$ParentImplCopyWithImpl<_$ParentImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ParentImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _Parent implements Parent {
+  factory _Parent(
+      {required final int id,
+      required final String name,
+      final String? image,
+      required final String slug,
+      required final bool hasChild}) = _$ParentImpl;
+
+  factory _Parent.fromJson(Map<String, dynamic> json) = _$ParentImpl.fromJson;
+
+  @override
+  int get id;
+  @override
+  String get name;
+  @override
+  String? get image;
+  @override
+  String get slug;
+  @override
+  bool get hasChild;
+  @override
+  @JsonKey(ignore: true)
+  _$$ParentImplCopyWith<_$ParentImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
