@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:texnomart/data/model/bookmark_data.dart';
 import 'package:texnomart/data/model/my_product_data.dart';
@@ -22,6 +23,7 @@ import '../../presentation/theme/light_colors.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../../presentation/theme/shimmer_items.dart';
+import '../basket/cart.dart';
 import '../detail/product_detail_screen.dart';
 
 class ProductsByCategoryScreen extends StatefulWidget {
@@ -59,6 +61,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
       statusBarColor: LightColors.primary, // Status bar color
         statusBarIconBrightness: Brightness.dark
     ));
+    final cart = Provider.of<CartProvider>(context);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -69,7 +72,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
             listener: (context, state) {},
             builder: (context, state) {
               print("********************************** product by category screen ${state.filteredProduct}");
-              return xitProductList(state.filteredProduct, state.bookMarks, state.cheeps, state.loading, state.isLoadingCheeps,);
+              return xitProductList(state.filteredProduct, state.bookMarks, state.cheeps, state.loading, state.isLoadingCheeps, cart);
             },
           ),
         ),
@@ -79,7 +82,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
 
 
 
-  Widget xitProductList(List<MyProductData> filteredProduct, List<BookmarkData> basket, List<Category> cheeps, bool isLoading, bool isLoadingCheeps) {
+  Widget xitProductList(List<MyProductData> filteredProduct, List<BookmarkData> basket, List<Category> cheeps, bool isLoading, bool isLoadingCheeps, CartProvider cart) {
     return Column(
       children: [
         const SizedBox(height: 15,),
@@ -109,7 +112,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
               itemBuilder: (context, index) {
                 return isLoading
                   ? xitProductShimmerItem(context)
-                  : xitProductItem(filteredProduct[index], index,);
+                  : xitProductItem(filteredProduct[index], index, cart);
               },
             ),
           ),
@@ -120,7 +123,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
 
 
   // Products? xitProduct
-  Widget xitProductItem(MyProductData xitProduct, int index) {
+  Widget xitProductItem(MyProductData xitProduct, int index, CartProvider cart) {
     return InkWell(
       onTap: () async{
         var res = await Navigator.of(context).push(
@@ -131,6 +134,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
               image: xitProduct.img,
               salePrice: xitProduct.cost,
               reviewsCount: xitProduct.reviewCount,
+              brand: xitProduct.brand,
             ),
           ),
         );
@@ -264,6 +268,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
                         setState(() {});
                       }
                     } else {
+                      cart.addItem();
                       _bloc.add(
                         CategoryClickBasketEvent(
                           id: xitProduct.id,

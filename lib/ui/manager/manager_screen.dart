@@ -118,7 +118,7 @@ class _ManagerScreenState extends State<ManagerScreen> {
               Badge(
                 backgroundColor: LightColors.primary,
                 label: Text(
-                  cart.itemCount.toString(),
+                  MyBookmarkHelper.getIds().where((e) => e.isSave == true).toList().length.toString(),
                   style: const TextStyle(color: Colors.black),
                 ),
                 child: Column(

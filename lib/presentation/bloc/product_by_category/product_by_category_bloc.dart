@@ -97,7 +97,8 @@ class ProductByCategoryBloc extends Bloc<ProductByCategoryEvent, ProductByCatego
             cost: data.salePrice ?? 1,
             isLike: isLikes,
             isSave: isSave,
-            slug: ""
+            brand: data.brand?.name ?? 'Aksios',
+            slug: "",
           )
         );
       }

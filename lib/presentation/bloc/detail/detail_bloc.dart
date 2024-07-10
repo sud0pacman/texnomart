@@ -32,6 +32,8 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
 
       var products = await di<ApiService>().getDetailProduct(id: event.id);
 
+      print("********************************* detail bloc ${products.data?.data?.characters}");
+
       emit(state.copyWith(
           isLoading: false,
           detailResponse: products,

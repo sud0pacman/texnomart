@@ -7,6 +7,7 @@ class MyProductData {
   bool isLike;
   bool isSave;
   int reviewCount;
+  String brand;
 
   MyProductData(
       {required this.id,
@@ -16,7 +17,8 @@ class MyProductData {
       this.slug = "",
       required this.isSave,
       required this.isLike,
-        required this.reviewCount
+      required this.reviewCount,
+        this.brand = "Aksios"
       });
 
   @override

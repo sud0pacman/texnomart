@@ -198,6 +198,8 @@ class _HomeScreenState extends State<HomeScreen> {
               image: xitProduct?.image ?? MyImages.myPlaceHolder,
               salePrice: xitProduct?.salePrice ?? 1,
               reviewsCount: xitProduct?.reviewsCount,
+              brand: 'Aksion',
+              allCount: xitProduct?.allCount ?? 1111,
             ),
           ),
         );

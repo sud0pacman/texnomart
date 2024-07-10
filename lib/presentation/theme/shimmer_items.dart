@@ -37,7 +37,7 @@ Widget categoryShimmerItem() {
             height: 80,
             width: 80,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(14),
               color: LightColors.shimmerColor,
             ),
           ),
@@ -52,7 +52,7 @@ Widget categoryShimmerItem() {
             height: 20,
             width: 80,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(10),
               color: LightColors.shimmerColor,
             ),
           ),

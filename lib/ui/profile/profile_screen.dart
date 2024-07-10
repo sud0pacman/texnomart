@@ -127,17 +127,34 @@ class _ProfilePageState extends State<ProfilePage> {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      const Row(
+                       Row(
                         children: [
-                          Icon(Icons.language),
-                          SizedBox(width: 8),
-                          Text(
+                          const Icon(Icons.language),
+                          const SizedBox(width: 8),
+                          const Text(
                             'Ilova tili',
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w500),
                           ),
-                          Spacer(),
-                          Icon(
+                          const Spacer(),
+                          Container(
+                            constraints: const BoxConstraints(
+                              minWidth: 20,
+                              minHeight: 25,
+                            ),
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                            decoration: BoxDecoration(
+                                color: LightColors.primary.withOpacity(.4),
+                                borderRadius: BorderRadius.circular(16)
+                            ),
+                            child: const NormalText(
+                              text: "O'z",
+                              fontSize: 15,
+                            ),
+                          ),
+                          const SizedBox(width: 6,),
+                          const Icon(
                             Icons.arrow_forward_ios_rounded,
                             size: 20,
                           )

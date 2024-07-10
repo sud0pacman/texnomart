@@ -21,9 +21,12 @@ class ProductDetailScreen extends StatefulWidget {
   final String image;
   final int salePrice;
   final int? reviewsCount;
+  final String brand;
+  final int allCount;
+
 
   const ProductDetailScreen({
-    super.key,   required this.id, required this.name, required this.image, required this.salePrice, required this.reviewsCount,
+    super.key,   required this.id, required this.name, required this.image, required this.salePrice, required this.reviewsCount, required this.brand, this.allCount = 1101,
   });
 
   @override
@@ -103,7 +106,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               _buildAboutProductRow('Unumdorligi', '0.5 kg/daq'),
               _buildAboutProductRow('Quvvati', '220 Vt'),
               _buildAllFeatures(),
-              _buildCommentsRow(widget.reviewsCount),
+              _buildCommentsRow(state.detailResponse?.data.data.reviewsCount ?? 1),
               _buildCustomDivider(),
               _buildBehaviourSupports(
                   Iconsax.box, 'Qanday qilib olish usullari:'),
