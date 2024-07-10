@@ -11,6 +11,7 @@ import 'package:texnomart/data/source/remote/response/special_categories/special
 import 'package:texnomart/presentation/bloc/home_bloc/home_bloc.dart';
 import 'package:texnomart/presentation/theme/light_colors.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:texnomart/presentation/theme/shimmer_items.dart';
 import 'package:texnomart/presentation/theme/ui_components.dart';
 import 'package:texnomart/presentation/theme/my_images.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -79,38 +80,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        SizedBox(
-                          width: double
-                              .infinity, // Ensures the slider takes up the full width
-                          child: CarouselSlider.builder(
-                            carouselController: _controller,
-                            itemCount: state.sliders?.data?.data?.length ?? 0,
-                            itemBuilder: (BuildContext context, int itemIndex,
-                                    int pageViewIndex) =>
-                                sliderItem(state.sliders?.data?.data?[itemIndex]),
-                            options: CarouselOptions(
-                              height: 200,
-                              aspectRatio: 16 / 9,
-                              viewportFraction: 1.0, // Each item fills the width
-                              initialPage: 0,
-                              enableInfiniteScroll: true,
-                              reverse: false,
-                              autoPlay: true,
-                              autoPlayInterval: const Duration(seconds: 3),
-                              autoPlayAnimationDuration:
-                                  const Duration(milliseconds: 800),
-                              autoPlayCurve: Curves.fastOutSlowIn,
-                              enlargeCenterPage: true,
-                              enlargeFactor: 0.3,
-                              onPageChanged: (index, reason) {
-                                setState(() {
-                                  activeIndex = index;
-                                });
-                              },
-                              scrollDirection: Axis.horizontal,
-                            ),
-                          ),
-                        ),
+
+                        state.slidersLoading
+                          ? sliderShimmer(context)
+                          :slider(state.sliders?.data?.data),
                         const SizedBox(
                           height: 12,
                         ),
@@ -123,23 +96,30 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(
                           height: 15,
                         ),
-                        categoryTitle(title: "Ommabop kategoriyalar", () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const CatalogScreen()));
-                        }),
+
+                        state.categoryLoading
+                        ? homeCategoryShimmerItem()
+                        : categoryTitle(title: "Ommabop kategoriyalar", () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const CatalogScreen()));
+                          }),
+
                         const SizedBox(
                           height: 15,
                         ),
-                        specialCategoryList(state.specialCategories),
+                        specialCategoryList(state.specialCategories, state.categoryLoading),
                         const SizedBox(
                           height: 20,
                         ),
-                        categoryTitle(title: "Xit savdo", () {}),
+
+                        state.productsLoading
+                        ? homeCategoryShimmerItem()
+                        : categoryTitle(title: "Xit savdo", () {}),
 
                         const SizedBox(
                           height: 20,
                         ),
 
-                        xitProductList(state.xitProducts, state.basket),
+                        xitProductList(state.xitProducts, state.basket, state.productsLoading),
 
                         const SizedBox(
                           height: 10,
@@ -154,16 +134,53 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget xitProductList(XitProducts? xitProducts, List<BookmarkData> basket) {
+  Widget slider(List<SliderData>? data) {
+    return SizedBox(
+      width: double
+          .infinity, // Ensures the slider takes up the full width
+      child: CarouselSlider.builder(
+        carouselController: _controller,
+        itemCount: data?.length ?? 0,
+        itemBuilder: (BuildContext context, int itemIndex,
+            int pageViewIndex) =>
+            sliderItem(data?[itemIndex]),
+        options: CarouselOptions(
+          height: 200,
+          aspectRatio: 16 / 9,
+          viewportFraction: 1.0, // Each item fills the width
+          initialPage: 0,
+          enableInfiniteScroll: true,
+          reverse: false,
+          autoPlay: true,
+          autoPlayInterval: const Duration(seconds: 3),
+          autoPlayAnimationDuration:
+          const Duration(milliseconds: 800),
+          autoPlayCurve: Curves.fastOutSlowIn,
+          enlargeCenterPage: true,
+          enlargeFactor: 0.3,
+          onPageChanged: (index, reason) {
+            setState(() {
+              activeIndex = index;
+            });
+          },
+          scrollDirection: Axis.horizontal,
+        ),
+      ),
+    );
+  }
+
+  Widget xitProductList(XitProducts? xitProducts, List<BookmarkData> basket, bool productsLoading) {
     return SizedBox(
       height: 370,
       child: ListView.separated(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: xitProducts?.data?.data?.length ?? 0,
+        itemCount: productsLoading ? 12 :  xitProducts?.data?.data?.length ?? 0,
         itemBuilder: (context, index) {
           var bookMarkData = MyBookmarkHelper.getDataByKey(xitProducts?.data?.data?[index].id ?? -1);
-          return xitProductItem(xitProducts?.data?.data?[index], bookMarkData?.isFavourite ?? false);
+          return productsLoading
+              ? xitProductShimmerItem(context)
+              : xitProductItem(xitProducts?.data?.data?[index], bookMarkData?.isFavourite ?? false);
         },
         separatorBuilder: (context, index) => index+1 != xitProducts?.data?.data?.length ?  const SizedBox(width: 0,) : const SizedBox(width: 20,),
       ),
@@ -383,14 +400,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-  Widget specialCategoryList(SpecialCategories? specialCategories) {
+  Widget specialCategoryList(SpecialCategories? specialCategories, bool categoryLoading) {
     return SizedBox(
       height: 120,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        itemCount: specialCategories?.data?.data?.length ?? 0,
+        itemCount: categoryLoading ? 12 : (specialCategories?.data?.data?.length ?? 0),
         separatorBuilder: (context, index) => const SizedBox(width: 0,),
-        itemBuilder: (context, index) => specialCategoryItem(specialCategories?.data?.data?[index])
+        itemBuilder: (context, index) =>
+        categoryLoading
+          ? categoryShimmerItem()
+          : specialCategoryItem(specialCategories?.data?.data?[index])
       ),
     );
   }
@@ -446,16 +466,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
         const SizedBox(height: 12,),
 
-        Text(
-          category?.title ?? "",
-          textAlign: TextAlign.start,
-          softWrap: true,
-          overflow: TextOverflow.clip,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 12,
-            fontWeight: FontWeight.normal,
-            height: .1,
+        SizedBox(
+          width: 80,
+          child: Center(
+            child: Text(
+              category?.title ?? "",
+              textAlign: TextAlign.center,
+              softWrap: true,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 12,
+                fontWeight: FontWeight.normal,
+                height: 1,
+              ),
+            ),
           ),
         )
       ],

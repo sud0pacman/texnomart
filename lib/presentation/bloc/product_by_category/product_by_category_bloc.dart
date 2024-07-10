@@ -17,8 +17,8 @@ part 'product_by_category_event.dart';
 
 class ProductByCategoryBloc extends Bloc<ProductByCategoryEvent, ProductByCategoryState> {
 
-  ProductByCategoryBloc() : super(ProductByCategoryState(filteredProduct: [], isBack: false, bookMarks: [], loading: false, cheeps: [])) {
-    on<LoadProductByCategoryEvent>((event, emit) async{
+  ProductByCategoryBloc() : super(ProductByCategoryState(filteredProduct: [], isBack: false, bookMarks: [], loading: false, cheeps: [], isLoadingCheeps: false)) {
+    on<LoadProductByCategoryEvent>((event, emit) async {
       emit(state.copyWith(loading: true));
       var networkProducts = await di<ApiService>().getSelectedCategory(slug: event.slug);
 
@@ -28,13 +28,14 @@ class ProductByCategoryBloc extends Bloc<ProductByCategoryEvent, ProductByCatego
     });
 
     on<LoadCheeps>((event, emit) async{
+      emit(state.copyWith(isLoadingCheeps: true));
       var cheepResponse = await di<ApiService>().getCategoryCheeps(slug: event.slug);
 
       List<Category> cheeps = cheepResponse.data.categories;
 
       print("********************************* category bloc cheeps ${cheeps.length}");
 
-      emit(state.copyWith(cheeps: cheeps));
+      emit(state.copyWith(isLoadingCheeps: false, cheeps: cheeps));
     });
 
     on<CLickLikedEvent>((event, emit) async{

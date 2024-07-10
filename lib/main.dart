@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:texnomart/di/di.dart';
 import 'package:texnomart/presentation/theme/light_colors.dart';
 import 'package:texnomart/ui/basket/cart.dart';
@@ -44,6 +45,43 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const ManagerScreen(),
+    );
+  }
+}
+
+
+class LoadingListPage extends StatefulWidget {
+  const LoadingListPage({super.key});
+
+  @override
+  State<LoadingListPage> createState() => _LoadingListPageState();
+}
+
+class _LoadingListPageState extends State<LoadingListPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Loading List'),
+      ),
+      body: Center(
+        child: SizedBox(
+          width: 200.0,
+          height: 100.0,
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey,
+            highlightColor: Colors.white,
+            child: Container(
+              width: 200.0,
+              height: 100.0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                color: LightColors.grey.withAlpha(90)
+              ),
+            )
+          ),
+        ),
+      )
     );
   }
 }

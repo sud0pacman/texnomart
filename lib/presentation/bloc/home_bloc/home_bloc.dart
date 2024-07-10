@@ -16,43 +16,63 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc()
-      : super(HomeState(sliders: null, topCategories: null, topBrands: null,specialCategories: null, xitProducts: null, basket: [])) {
+      : super(HomeState(
+            sliders: null,
+            topCategories: null,
+            topBrands: null,
+            specialCategories: null,
+            xitProducts: null,
+            basket: [],
+            slidersLoading: false,
+            categoryLoading: false,
+            productsLoading: false)) {
     on<HomeLoadCategoriesEvent>((event, emit) async {
+      emit(state.copyWith(slidersLoading: true));
       var slider = await di<ApiService>().getSlider();
 
-      emit(state.copyWith(sliders: slider));
+      emit(state.copyWith(slidersLoading: false, sliders: slider));
     });
 
     on<HomeLoadBrandEvent>((event, emit) async {
-      var brand = await di<ApiService>().getTopBrands();
+      // emit(state.copyWith(categoryLoading: true));
+      // var brand = await di<ApiService>().getTopBrands();
 
-      emit(state.copyWith(topBrands: brand));
+      // emit(state.copyWith(categoryLoading: false, topBrands: brand));
     });
 
-    on<HomeLoadSpecialCategories>((event, emit) async{
+    on<HomeLoadSpecialCategories>((event, emit) async {
+      emit(state.copyWith(categoryLoading: true));
       var category = await di<ApiService>().getSpecialCategories();
 
-      emit(state.copyWith(specialCategories: category));
+      emit(state.copyWith(categoryLoading: false, specialCategories: category));
     });
 
     on<HomeLoadXitProductsEvent>((event, emit) async {
+      emit(state.copyWith(productsLoading: true));
+
       var xitProducts = await di<ApiService>().getXitProducts();
 
-      emit(state.copyWith(xitProducts: xitProducts));
+      emit(state.copyWith(xitProducts: xitProducts, productsLoading: false));
     });
 
-    on<HomeClickLikedEvent>((event, emit) async{
+    on<HomeClickLikedEvent>((event, emit) async {
       var bookMark = MyBookmarkHelper.getDataByKey(event.id);
 
-      if(bookMark != null) {
+      if (bookMark != null) {
         bookMark.isFavourite = !event.isSave;
-      }
-      else {
-        bookMark = BookmarkData(id: event.id, count: 1, name: event.name, cost: event.cost, img: event.img, isSave: false, isFavourite: !event.isSave, isSelect: true);
+      } else {
+        bookMark = BookmarkData(
+            id: event.id,
+            count: 1,
+            name: event.name,
+            cost: event.cost,
+            img: event.img,
+            isSave: false,
+            isFavourite: !event.isSave,
+            isSelect: true);
       }
 
       MyBookmarkHelper.putData(event.id, bookMark);
-
 
       emit(state.copyWith(basket: MyBookmarkHelper.getIds()));
     });

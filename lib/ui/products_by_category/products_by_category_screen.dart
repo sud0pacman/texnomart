@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hive/hive.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:texnomart/data/model/bookmark_data.dart';
 import 'package:texnomart/data/model/my_product_data.dart';
 import 'package:texnomart/data/source/local/my_bookmark_helper.dart';
@@ -19,6 +21,7 @@ import '../../presentation/bloc/product_by_category/product_by_category_bloc.dar
 import '../../presentation/theme/light_colors.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
+import '../../presentation/theme/shimmer_items.dart';
 import '../detail/product_detail_screen.dart';
 
 class ProductsByCategoryScreen extends StatefulWidget {
@@ -66,7 +69,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
             listener: (context, state) {},
             builder: (context, state) {
               print("********************************** product by category screen ${state.filteredProduct}");
-              return xitProductList(state.filteredProduct, state.bookMarks, state.cheeps, state.loading);
+              return xitProductList(state.filteredProduct, state.bookMarks, state.cheeps, state.loading, state.isLoadingCheeps,);
             },
           ),
         ),
@@ -76,7 +79,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
 
 
 
-  Widget xitProductList(List<MyProductData> filteredProduct, List<BookmarkData> basket, List<Category> cheeps, bool isLoading) {
+  Widget xitProductList(List<MyProductData> filteredProduct, List<BookmarkData> basket, List<Category> cheeps, bool isLoading, bool isLoadingCheeps) {
     return Column(
       children: [
         const SizedBox(height: 15,),
@@ -84,9 +87,10 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
           height: 36,
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: cheeps.length,
-              itemBuilder: (context, index) => brandChip(cheeps[index], index)
-          ),
+              itemCount: isLoadingCheeps ? 12 : cheeps.length,
+              itemBuilder: (context, index) => isLoadingCheeps
+                  ? shimmerCheep()
+                  : brandChip(cheeps[index], index)),
         ),
         const SizedBox(height: 12,),
         filterSection(),
@@ -94,20 +98,18 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen> {
         Flexible(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: isLoading ? loading() :
+            child:
             AlignedGridView.count(
               shrinkWrap: true,
               physics: const ScrollPhysics(),
               crossAxisCount: 2,
               mainAxisSpacing: 20,
-              itemCount: filteredProduct.length,
+              itemCount: isLoading ? 12 : filteredProduct.length,
               // crossAxisSpacing: 4,
               itemBuilder: (context, index) {
-                var product = filteredProduct[index];
-                return xitProductItem(
-                  product,
-                  index,
-                );
+                return isLoading
+                  ? xitProductShimmerItem(context)
+                  : xitProductItem(filteredProduct[index], index,);
               },
             ),
           ),

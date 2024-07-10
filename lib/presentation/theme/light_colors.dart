@@ -7,4 +7,6 @@ class LightColors {
   static const grey = Color(0xffcccccc);
   static const lightPeach = Color(0xffffeeb3);
   static const primary2 = Color(0xfff7f7f7);
+  static const shimmerColor = Color(0xffe7ebf1);
+  static const shimmerHighColor = Color(0xfff4f6f5);
 }
